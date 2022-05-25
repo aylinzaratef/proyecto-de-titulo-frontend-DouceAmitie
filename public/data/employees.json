@@ -1,0 +1,31 @@
+{
+    "data": [
+        {
+            "rut": "19772375-0",
+            "nombre": "Aylin Zarate Fernandez",
+            "cargo": "Administrador",
+            "telefono": "+56949037158",
+            "email": "aylinzaratefernandez97@gmail.com",
+            "direccion": "P. Sherman calle wallaby 42, Sidney",
+            "fechacontrata": "23-12-2020"
+        },
+        {
+            "rut": "19772375-1",
+            "nombre": "Aylin Zarate Fernandez",
+            "cargo": "Administrador",
+            "telefono": "+56949037158",
+            "email": "aylinzaratefernandez97@gmail.com",
+            "direccion": "P. Sherman calle wallaby 42, Sidney",
+            "fechacontrata": "23-12-2020"
+        },
+        {
+            "rut": "19772375-2",
+            "nombre": "Aylin Zarate Fernandez",
+            "cargo": "Administrador",
+            "telefono": "+56949037158",
+            "email": "aylinzaratefernandez97@gmail.com",
+            "direccion": "P. Sherman calle wallaby 42, Sidney",
+            "fechacontrata": "23-12-2020"
+        }
+    ]
+}
