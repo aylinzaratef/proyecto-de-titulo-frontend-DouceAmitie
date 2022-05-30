@@ -3,8 +3,13 @@ import { Header } from "../components/Header";
 import "./landing.scss";
 import { Carrusel } from "../components/Carrusel";
 import { Cards } from "../components/cards/Cards";
+import { Testimonial } from "../components/Testimonial";
+import { Button } from 'primereact/button';
 
 export const Landing = () => {
+  const redireccionar = () => {
+    window.open("https://api.whatsapp.com/message/MPSAXM7OQ37ND1?autoload=1&app_absent=0", "_blank")
+  }
   return (
     <div>
       <Header />
@@ -13,10 +18,8 @@ export const Landing = () => {
         className="navbar navbar-expand-lg bg-blanco text-uppercase sticky-top"
         id="mainNav"
       >
-        <div className="container">
-          <a className="navbar-brand c-chocolate" href="#page-top">
-            Start Bootstrap
-          </a>
+        <div className="container-fluid">
+
           <button
             className="navbar-toggler text-uppercase font-weight-bold bg-rosa text-white rounded"
             type="button"
@@ -30,45 +33,71 @@ export const Landing = () => {
             <i className="fas fa-bars"></i>
           </button>
           <div className="collapse navbar-collapse" id="navbarResponsive">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item mx-0 mx-lg-1">
+            <ul className="navbar-nav">
+              <li className="nav-item mx-0 mx-lg-2">
                 <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded c-chocolate"
+                  className="nav-link py-3 px-0 px-lg-1 rounded c-chocolate h6"
                   href="#portfolio"
                 >
-                  Portfolio
+                  Productos Destacados
                 </a>
               </li>
-              <li className="nav-item mx-0 mx-lg-1">
+              <li className="nav-item mx-0 mx-lg-2">
                 <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded c-chocolate"
+                  className="nav-link py-3 px-0 px-lg-1 rounded c-chocolate h6"
                   href="#about"
                 >
-                  About
+                  Nosotras
                 </a>
               </li>
-              <li className="nav-item mx-0 mx-lg-1">
+              <li className="nav-item mx-0 mx-lg-2">
                 <a
-                  className="nav-link py-3 px-0 px-lg-3 rounded c-chocolate"
-                  href="#otro"
+                  className="nav-link py-3 px-0 px-lg-1 rounded c-chocolate h6"
+                  href="#clientes"
                 >
-                  About
+                  Nuestros clientes
+                </a>
+              </li>
+              <li className="nav-item mx-0 mx-lg-2">
+                <a
+                  className="nav-link py-3 px-0 px-lg-1 rounded c-chocolate h6"
+                  href="/faq"
+                >
+                  FAQ
                 </a>
               </li>
             </ul>
           </div>
+          <Button icon="pi pi-whatsapp" label="Haz tu pedido" className="p-button-rounded p-button-success" onClick={redireccionar} />
         </div>
       </nav>
-
       <section className="page-section portfolio  bg-rosa" id="">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <Carrusel />
+            <div className="col-12 col-md-4 col-lg-4 col-xl-4 text-center d-block d-md-none d-lg-none d-xl-none">
+              <img src={`images/logo.png`} className="w-50" />
+            </div>
+            <div className="col-12 col-md-8 col-lg-8 col-xl-8">
+              <Carrusel />
+            </div>
+            <div className="col-12 col-md-4 col-lg-4 col-xl-4 text-center d-none d-md-block d-lg-block d-xl-block">
+              <img src={`images/logo.png`} className="w-50" />
+            </div>
           </div>
         </div>
       </section>
 
       <section className="page-section portfolio" id="portfolio">
+        <h2 className="page-section-heading text-center text-uppercase c-chocolate my-4">
+          Destacados
+        </h2>
+        <div className="divider-custom c-chocolate">
+          <div className="divider-custom-line"></div>
+          <div className="divider-custom-icon">
+            <i className="pi pi-star-fill"></i>
+          </div>
+          <div className="divider-custom-line"></div>
+        </div>
         <Cards />
       </section>
 
@@ -104,29 +133,37 @@ export const Landing = () => {
         </div>
       </section>
 
-      <section className="page-section portfolio" id="otro">
-        <div className="container">
-          <h2 className="page-section-heading text-center text-uppercase text-secondary mb-0">
-            Portfolio
+      <section class="page-section pb-100 pt-5 mt-3" id="clientes">
+        <div class="container">
+          <h2 className="page-section-heading text-center text-uppercase c-chocolate my-4">
+            Clientes
           </h2>
-          <div className="divider-custom">
+          <div className="divider-custom c-chocolate">
             <div className="divider-custom-line"></div>
             <div className="divider-custom-icon">
-              <i className="fas fa-star"></i>
+              <i className="pi pi-star-fill"></i>
             </div>
             <div className="divider-custom-line"></div>
           </div>
-          <div className="row justify-content-center">
-            <Carrusel />
+          <div class="row align-items-center">
+            <div class="col-md-6 col-lg-5 mb-4 mb-sm-4 mb-md-0 mb-lg-0">
+              <div class="testimonial-heading text-principal">
+                <h2 class="text-principal">¿Qué dicen nuestros clientes sobre nuestro servicio?</h2>
+                <p class="text-principal">Nuestros clientes quedan satisfechos con nuestros servicios, no solo por la profesionalidad y el trato, si no también por los precios bajos y la amabilidad que bridan nuestros trabajadores.</p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-6">
+              <Testimonial />
+            </div>
           </div>
         </div>
       </section>
 
-      <footer className="footer text-center">
+      <footer className="footer text-center bg-rosa">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 mb-5 mb-lg-0">
-              <h4 className="text-uppercase mb-4">Location</h4>
+              <h4 className="text-uppercase mb-4">Encuentranos</h4>
               <p className="lead mb-0">
                 2215 John Daniel Drive
                 <br />
@@ -134,17 +171,23 @@ export const Landing = () => {
               </p>
             </div>
             <div className="col-lg-6">
-              <h4 className="text-uppercase mb-4">About Freelancer</h4>
-              <p className="lead mb-0">
-                Freelance is a free to use, MIT licensed Bootstrap theme created
-                by
-                <a href="http://startbootstrap.com">Start Bootstrap</a>.
+              <h4 className="text-uppercase mb-4">Enlaces</h4>
+              <p>
+                <a><i className="pi pi-whatsapp"></i> Whatsapp</a>
               </p>
+              <p>
+                <a><i className="pi pi-instagram" /> Instagram</a>
+              </p>
+              <p>
+                <a href="/login" className="text-white"><i className="pi pi-key" /> Iniciar Sesión</a>
+              </p>
+
+
             </div>
           </div>
         </div>
       </footer>
-      <div className="copyright py-4 text-center text-white">
+      <div className="copyright py-4 text-center c-chocolate bg-white">
         <div className="container">
           <small>Copyright &copy; Your Website 2022</small>
         </div>

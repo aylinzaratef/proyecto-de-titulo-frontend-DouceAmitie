@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 .bg-rosa {
     background-color: $color_1;
 }
@@ -16,9 +17,21 @@
 }
 
 .c-chocolate {
-    color: $color_12 !important;
+    color: $color_12  !important;
 }
 
 .rosaclaro {
-    color: #f3bdd7;
+    background-color: #FFC6CC;
+}
+
+.bg-damasco {
+    background-color: #f6bf9f;
+}
+
+.c-rosa {
+    color: #DD1D5F;
+}
+
+.bg-rosa-oscuro {
+    background-color: #DD1D5F;
 }

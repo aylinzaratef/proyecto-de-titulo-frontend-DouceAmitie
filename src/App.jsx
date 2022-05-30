@@ -9,20 +9,26 @@ import { Book } from './pages/Book'
 import { Employees } from './pages/Employees'
 import { Box } from './pages/Box'
 import { Landing } from './pages/Landing'
+import { FAQ } from './pages/FAQ'
+import { AuthProvider } from './context/contextUser';
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  const [count, setCount] = useState(0)
+  const [user, setUser] = useState({ perfil: "admin" })
   return (
-    <Routes>
-      <Route exact path='/calendar' element={<Home />} />
-      <Route exact path='/statistics' element={<Stadistic />} />
-      <Route exact path='/login' element={<Login />} />
-      <Route exact path='/book' element={<Book />} />
-      <Route exact path='/employees' element={<Employees />} />
-      <Route exact path='/box' element={<Box />} />
-      <Route exact path='/' element={<Landing />} />
-    </Routes>                                           //GENERA RUTAS PARA LAS PAGINAS
+    <AuthProvider>
+      <Routes>
+        <Route exact path='/home' element={<Home />} />
+        <Route exact path='/statistics' element={<Stadistic />} />
+        <Route exact path='/login' element={<Login />} />
+        <Route exact path='/book' element={<Book />} />
+        <Route exact path='/employees' element={<Employees />} />
+        <Route exact path='/box' element={<Box />} />
+        <Route exact path='/' element={<Landing />} />
+        <Route exact path='/faq' element={<FAQ />} />
+      </Routes>
+    </AuthProvider>                                         //GENERA RUTAS PARA LAS PAGINAS
 
   )
 }

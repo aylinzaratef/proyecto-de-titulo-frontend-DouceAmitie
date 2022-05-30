@@ -1,7 +1,9 @@
 import Calendar from "../components/Calendar";
-import { Header } from "../components/Header";
 import { MenuBar } from "../components/MenuBar";
+
+
 export const Home = () => {
+
     return (
         <div>
             <MenuBar />

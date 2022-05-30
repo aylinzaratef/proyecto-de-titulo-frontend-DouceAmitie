@@ -579,7 +579,24 @@ export default class Calendar extends React.PureComponent {
           />
           <DragDropProvider />
         </Scheduler>
+        if(true) {
 
+        } else {
+          <StyledFab
+            color="secondary"
+            className={classes.addButton}
+            onClick={() => {
+              this.setState({ editingFormVisible: true });
+              this.onEditingAppointmentChange(undefined);
+              this.onAddedAppointmentChange({
+                startDate: new Date(currentDate).setHours(startDayHour),
+                endDate: new Date(currentDate).setHours(startDayHour + 1),
+              });
+            }}
+          >
+            <AddIcon />
+          </StyledFab>
+        }
         <Dialog open={confirmationVisible} onClose={this.cancelDelete}>
           <DialogTitle>Eliminar Pedido</DialogTitle>
           <DialogContent>
@@ -605,20 +622,7 @@ export default class Calendar extends React.PureComponent {
           </DialogActions>
         </Dialog>
 
-        <StyledFab
-          color="secondary"
-          className={classes.addButton}
-          onClick={() => {
-            this.setState({ editingFormVisible: true });
-            this.onEditingAppointmentChange(undefined);
-            this.onAddedAppointmentChange({
-              startDate: new Date(currentDate).setHours(startDayHour),
-              endDate: new Date(currentDate).setHours(startDayHour + 1),
-            });
-          }}
-        >
-          <AddIcon />
-        </StyledFab>
+
       </Paper>
     );
   }
