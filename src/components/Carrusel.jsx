@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Carousel } from "primereact/carousel";
-import { Button } from "primereact/button";
 import { ProductService } from "../components/ProductService";
 
 export const Carrusel = () => {
@@ -33,7 +32,7 @@ export const Carrusel = () => {
     return (
       <div className="p-3 text-center">
         <img
-          src={`images/product/${product.image}`}
+          src={`images/tortuga.jpge`}
           onError={(e) =>
             (e.target.src =
               "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")

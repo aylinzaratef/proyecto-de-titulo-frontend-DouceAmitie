@@ -1,10 +1,9 @@
-
-{/*AQUI SE IMPORTAN LOS DATOS DE LA API*/ }
+{ /*AQUI SE IMPORTAN LOS DATOS DE LA API*/ }
 
 
 export class ProductService {
 
-    getProductsSmall() {
+    getProductosDestacados() {
         return fetch('data/products-small.json').then(res => res.json()).then(d => d.data);
     }
 

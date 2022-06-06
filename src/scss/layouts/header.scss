@@ -1,5 +1,4 @@
 @import "../variables.scss";
-
 .bg-rosa {
     background-color: $color_1;
 }
@@ -17,11 +16,11 @@
 }
 
 .c-chocolate {
-    color: $color_12  !important;
+    color: $color_12 !important;
 }
 
 .rosaclaro {
-    background-color: #FFC6CC;
+    background-color: #ffc6cc;
 }
 
 .bg-damasco {
@@ -29,9 +28,108 @@
 }
 
 .c-rosa {
-    color: #DD1D5F;
+    color: $color_rosafuerte;
 }
 
 .bg-rosa-oscuro {
-    background-color: #DD1D5F;
+    background-color: $color_rosafuerte;
+}
+
+.bg-dorado {
+    background-color: $color_dorado;
+}
+
+.todo-rosa * {
+    color: $color_rosafuerte !important;
+}
+
+.btn-rosa {
+    color: #ffffff !important;
+    background-color: $color_rosafuerte !important;
+    border-color: $color_rosafuerte !important;
+}
+
+.btn-rosa:hover {
+    color: $color_rosafuerte !important;
+    background-color: $color_dorado !important;
+    border-color: $color_dorado !important;
+}
+
+.img-calendario {
+    position: fixed;
+    bottom: auto;
+    right: 0;
+    top: auto;
+    left: auto;
+    opacity: 20%;
+    width: 50%;
+}
+
+.Demo-addButton svg path {
+    color: #ffffff !important;
+}
+
+.Cell-today {
+    background-color: $color_dorado !important;
+}
+
+.Appointment-appointment * {
+    color: #ffffff !important;
+}
+
+.card-login {
+    background: linear-gradient( to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3)) !important;
+    border-radius: 2rem;
+    border-color: #ffcd68 !important;
+    z-index: 2;
+    backdrop-filter: blur(2rem);
+}
+
+.button-demo {
+    text-align: right;
+    margin-bottom: 3rem;
+}
+
+.button-demo .template .p-button.vimeo {
+    background: linear-gradient(to left, #26d46a 50%, #128c7e 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: background-position 0.5s ease-out;
+    color: #fff;
+    border-color: #26d46a;
+}
+
+.button-demo .template .p-button.vimeo:hover {
+    background-position: left bottom;
+}
+
+.button-demo .template .p-button.vimeo i {
+    background-color: #128c7e;
+}
+
+.button-demo .template .p-button.vimeo:focus {
+    box-shadow: 0 0 0 1px #26d46a;
+}
+
+.content-img-menu {
+    width: 9rem;
+}
+
+.img-menu-landing {
+    position: absolute;
+    top: 1rem;
+}
+
+.bg-header {
+    background: rgb(246, 191, 159);
+    background: linear-gradient(90deg, rgba(246, 191, 159, 1) 20%, #e1758e 100%);
+}
+
+.p-dataview-content {
+    background: rgb(246, 191, 159) !important;
+    background: linear-gradient( 90deg, rgba(246, 191, 159, 1) 20%, #e1758e 100%) !important;
+}
+
+.p-link {
+    display: none;
 }

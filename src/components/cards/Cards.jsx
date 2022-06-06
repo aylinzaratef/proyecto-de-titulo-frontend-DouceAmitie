@@ -46,8 +46,8 @@ export const Cards = () => {
               }
               alt={data.name}
             />
-            <div className="product-name">{data.name}</div>
-            <div className="product-description">{data.description}</div>
+            <div className="product-name">{data.nombre}</div>
+            <div className="product-description">{data.categoria}</div>
             <Rating value={data.rating} readOnly cancel={false}></Rating>
           </div>
         </div>

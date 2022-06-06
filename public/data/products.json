@@ -1,40 +1,27 @@
 {
-    "data": [
-        {
-            "id": "1000",
-            "code": "f230fh0g3",
-            "name": "Bamboo Watch",
-            "description": "Product Description",
-            "image": "",
-            "price": 65,
-            "category": "Accessories",
-            "quantity": 24,
-            "inventoryStatus": "INSTOCK",
-            "rating": 5
-        },
-        {
-            "id": "1100",
-            "code": "f230fh0g3",
-            "name": "Bamboo Watch",
-            "description": "Product Description",
-            "image": "",
-            "price": 65,
-            "category": "Accessories",
-            "quantity": 24,
-            "inventoryStatus": "INSTOCK",
-            "rating": 5
-        },
-        {
-            "id": "1200",
-            "code": "f230fh0g3",
-            "name": "Bamboo Watch",
-            "description": "Product Description",
-            "image": "",
-            "price": 65,
-            "category": "Accessories",
-            "quantity": 24,
-            "inventoryStatus": "INSTOCK",
-            "rating": 5
-        }
-    ]
+    "data": [{
+        "id": "1000",
+        "nombre": "Bamboo Watch",
+        "ingredientes": "Product Description",
+        "preparacion": "Product Description",
+        "image": "",
+        "video": "https://www.youtube.com/watch?v=2jYEz66J_J4&list=RD2jYEz66J_J4&start_radio=1",
+        "categoria": "Torta"
+    }, {
+        "id": "1001",
+        "nombre": "Bamboo Watch 1 ",
+        "ingredientes": "Product Description 1",
+        "preparacion": "Product Description 1",
+        "image": "",
+        "video": "",
+        "categoria": "Torta"
+    }, {
+        "id": "1002",
+        "nombre": "Bamboo Watch 1 ",
+        "ingredientes": "Product Description 1",
+        "preparacion": "Product Description 1",
+        "image": "",
+        "video": "",
+        "categoria": "Torta"
+    }]
 }

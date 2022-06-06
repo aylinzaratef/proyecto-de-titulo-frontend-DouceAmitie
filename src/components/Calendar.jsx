@@ -48,6 +48,9 @@ import Checkbox from "@mui/material/Checkbox";
 import { appointments } from "./appointments";
 import { ModalCliente } from "./ModalCliente";
 
+import { authContext } from "../context/contextUser";
+import { useContext, useState, useEffect } from "react";
+
 const PREFIX = "Demo";
 const classes = {
   content: `${PREFIX}-content`,
@@ -120,7 +123,6 @@ const MenuProps = {
     },
   },
 };
-
 
 const namesPastel = {
   1: "Torta",
@@ -370,10 +372,19 @@ class AppointmentFormContainerBasic extends React.PureComponent {
             <div className={classes.wrapper}>
               <Notes className={classes.icon} color="action" />
               <TextField
-                {...textEditorProps("notes")}
+                {...textEditorProps("observaciones_pedido")}
                 multiline
                 rows="6"
-                label={"Notas"}
+                label={"Observaciones pedido"}
+              />
+            </div>
+            <div className={classes.wrapper}>
+              <Notes className={classes.icon} color="action" />
+              <TextField
+                {...textEditorProps("observaciones_entrega")}
+                multiline
+                rows="6"
+                label={"Observaciones entrega"}
               />
             </div>
           </div>
@@ -382,13 +393,13 @@ class AppointmentFormContainerBasic extends React.PureComponent {
               <Button
                 variant="outlined"
                 color="secondary"
-                className={classes.button}
+                className={classes.button + " mx-2"}
                 onClick={() => {
                   visibleChange();
                   this.commitAppointment("deleted");
                 }}
               >
-                Delete
+                Eliminar
               </Button>
             )}
             <button
@@ -572,6 +583,7 @@ export default class Calendar extends React.PureComponent {
           <TodayButton />
 
           <ViewSwitcher />
+
           <AppointmentForm
             overlayComponent={this.appointmentForm}
             visible={editingFormVisible}
@@ -579,24 +591,20 @@ export default class Calendar extends React.PureComponent {
           />
           <DragDropProvider />
         </Scheduler>
-        if(true) {
-
-        } else {
-          <StyledFab
-            color="secondary"
-            className={classes.addButton}
-            onClick={() => {
-              this.setState({ editingFormVisible: true });
-              this.onEditingAppointmentChange(undefined);
-              this.onAddedAppointmentChange({
-                startDate: new Date(currentDate).setHours(startDayHour),
-                endDate: new Date(currentDate).setHours(startDayHour + 1),
-              });
-            }}
-          >
-            <AddIcon />
-          </StyledFab>
-        }
+        <StyledFab
+          color="secondary"
+          className={classes.addButton}
+          onClick={() => {
+            this.setState({ editingFormVisible: true });
+            this.onEditingAppointmentChange(undefined);
+            this.onAddedAppointmentChange({
+              startDate: new Date(currentDate).setHours(startDayHour),
+              endDate: new Date(currentDate).setHours(startDayHour + 1),
+            });
+          }}
+        >
+          <AddIcon />
+        </StyledFab>
         <Dialog open={confirmationVisible} onClose={this.cancelDelete}>
           <DialogTitle>Eliminar Pedido</DialogTitle>
           <DialogContent>
@@ -621,8 +629,6 @@ export default class Calendar extends React.PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-
-
       </Paper>
     );
   }

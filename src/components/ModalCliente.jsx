@@ -49,24 +49,48 @@ export const ModalCliente = () => {
               <h3 className="c-rosa">Nuevo Cliente</h3>
               <div className="col-12 mt-3">
                 <TextField
-                  id="outlined-basic"
-                  label="Outlined"
+                  id="cliente-rut"
+                  label="RUT"
                   variant="outlined"
                   fullWidth
                 />
               </div>
               <div className="col-12 mt-3">
                 <TextField
-                  id="outlined-basic"
-                  label="Outlined"
+                  id="cliente-nombre"
+                  label="Nombre"
                   variant="outlined"
                   fullWidth
                 />
               </div>
               <div className="col-12 mt-3">
                 <TextField
-                  id="outlined-basic"
-                  label="Outlined"
+                  id="cliente-apellidopaterno"
+                  label="Apellido Paterno"
+                  variant="outlined"
+                  fullWidth
+                />
+              </div>
+              <div className="col-12 mt-3">
+                <TextField
+                  id="cliente-apellidomaterno"
+                  label="Apellido Materno"
+                  variant="outlined"
+                  fullWidth
+                />
+              </div>
+              <div className="col-12 mt-3">
+                <TextField
+                  id="cliente-telefono"
+                  label="Teléfono"
+                  variant="outlined"
+                  fullWidth
+                />
+              </div>
+              <div className="col-12 mt-3">
+                <TextField
+                  id="cliente-email"
+                  label="E-mail"
                   variant="outlined"
                   fullWidth
                 />
