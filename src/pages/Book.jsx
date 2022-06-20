@@ -44,6 +44,13 @@ export const Book = () => {
     productService.getProducts().then((data) => setProducts(data));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+
+  //PEDIDOS TRAE FECHA Y HORA
+  let date = new Date();
+  var FechaIngreso = date.toISOString();
+
+  console.log(FechaIngreso);
+
   const customBase64Uploader = async (event) => {
     // convert file to base64 encoded
     const file = event.files[0];
@@ -196,8 +203,8 @@ export const Book = () => {
         <img
           src={`images/product/${rowData.image}`}
           onError={(e) =>
-            (e.target.src =
-              "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+          (e.target.src =
+            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
           }
           alt={rowData.image}
           className="product-image"
@@ -355,8 +362,8 @@ export const Book = () => {
             <img
               src={`images/product/${product.image}`}
               onError={(e) =>
-                (e.target.src =
-                  "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+              (e.target.src =
+                "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
               }
               alt={product.image}
               className="product-image block m-auto pb-3"
@@ -493,8 +500,8 @@ export const Book = () => {
             <img
               src={`images/product/${product.image}`}
               onError={(e) =>
-                (e.target.src =
-                  "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+              (e.target.src =
+                "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
               }
               alt={product.image}
               className="product-image block m-auto pb-3"
@@ -629,8 +636,8 @@ export const Book = () => {
             <img
               src={`images/product/${product.image}`}
               onError={(e) =>
-                (e.target.src =
-                  "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+              (e.target.src =
+                "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
               }
               alt={product.image}
               className="product-image block m-auto pb-3"

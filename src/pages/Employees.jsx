@@ -56,9 +56,9 @@ export const Employees = () => {
     setDeleteProductDialog(false);
   };
 
+  //agregar trabajador 
   const saveProduct = () => {
     setSubmitted(true);
-
     if (product.nombre.trim()) {
       let _products = [...products];
       let _product = { ...product };
@@ -73,19 +73,76 @@ export const Employees = () => {
         });
         setEditDialog(false);
       } else {
-        _products.push(_product);
-        toast.current.show({
-          severity: "success",
-          summary: "Completado",
-          detail: "Trabajador Creado",
-          life: 3000,
-        });
-        setProductDialog(false);
+
+        const processForm = async (e) => {
+          e.preventDefault()
+          const resp = await fetch(
+            "https://springgcp2-353703.rj.r.appspot.com/Registro/registrar",
+            {
+              method: "POST",
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                "rut": rut, "nombre": nombre, "apellidoPaterno": apellidoPaterno, "apellidoMaterno": apellidoMaterno,
+                "password": password, "telefono": telefono, "email": email, "direccion": direccion, "fechaIngreso": fechaIngreso, "permisos": category
+              })
+            }
+          )
+          const data = await resp.json().then((data) => {
+            console.log(data)
+            _products.push(_product);
+            toast.current.show({
+              severity: "success",
+              summary: "Completado",
+              detail: "Trabajador Creado",
+              life: 3000,
+            });
+            setProductDialog(false);
+          })
+          setProduct(_product);
+        }
+
+        /* var saveData = {};
+         saveData.rut = "12623878-9";
+         saveData.nombre = "Patricia";
+         saveData.apellido_Paterno = "Fernandez";
+         saveData.apellido_Materno = "Vidal";
+         saveData.password = "123456"
+         saveData.fecha_Ingreso = "2016-08-13"
+         saveData.id_Rol = 2;
+         console.log(saveData);
+         fetch("https://springgcp2-353703.rj.r.appspot.com/Registro/registrar", {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+             "Accept": "application/json",
+             "X-Request-With": "XMLHttpRequest",
+             "Access-Control-Allow-Origin": "origin-list",
+           },
+           body: JSON.stringify(saveData),
+         }).then((data) => {
+           console.log(data)
+           _products.push(_product);
+           toast.current.show({
+             severity: "success",
+             summary: "Completado",
+             detail: "Trabajador Creado",
+             life: 3000,
+           });
+           setProductDialog(false);
+         });*/
       }
 
-      setProducts(_products);
+
+
     }
   };
+
+  //FECHA PARA TRABAJADORES
+  let date = new Date();
+  var fechaIngreso = date.toISOString().split('T')[0];
+
+
+
 
   const editProduct = (product) => {
     setProduct({ ...product });
@@ -355,7 +412,7 @@ export const Employees = () => {
             )}
           </div>
           <div className="field mt-3">
-            <label htmlFor="nombre">Nombre Completo</label>
+            <label htmlFor="nombre">Nombre</label>
             <InputText
               id="nombre"
               value={product.nombre}
@@ -368,6 +425,54 @@ export const Employees = () => {
             />
             {submitted && !product.nombre && (
               <small className="p-error">Nombre es requerido.</small>
+            )}
+          </div>
+          <div className="field mt-3">
+            <label htmlFor="apellidoPaterno">Primer Apellido</label>
+            <InputText
+              id="apellidoPaterno"
+              value={product.apellidoPaterno}
+              onChange={(e) => onInputChange(e, "apellidoPaterno")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !product.apellidoPaterno,
+              })}
+            />
+            {submitted && !product.apellidoPaterno && (
+              <small className="p-error">Primer apellido es requerido.</small>
+            )}
+          </div>
+          <div className="field mt-3">
+            <label htmlFor="apellidoMaterno">Segundo Apellido</label>
+            <InputText
+              id="apellidoMaterno"
+              value={product.apellidoMaterno}
+              onChange={(e) => onInputChange(e, "apellidoMaterno")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !product.apellidoMaterno,
+              })}
+            />
+            {submitted && !product.apellidoMaterno && (
+              <small className="p-error">Nombre es requerido.</small>
+            )}
+          </div>
+          <div className="field mt-3">
+            <label htmlFor="password">Contraseña</label>
+            <InputText
+              id="password"
+              value={product.password}
+              onChange={(e) => onInputChange(e, "password")}
+              required
+              autoFocus
+              className={classNames({
+                "p-invalid": submitted && !product.password,
+              })}
+            />
+            {submitted && !product.password && (
+              <small className="p-error">Contraseña es requerida.</small>
             )}
           </div>
           <div className="field mt-3">
