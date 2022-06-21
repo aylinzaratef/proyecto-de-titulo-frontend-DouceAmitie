@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
 import {
   Scheduler,
+  Resources,
   Toolbar,
   MonthView,
   WeekView,
@@ -44,12 +45,43 @@ import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
-
-import { appointments } from "./appointments";
 import { ModalCliente } from "./ModalCliente";
+import { ProductService } from "../components/ProductService";
+import { blue, orange, green } from '@mui/material/colors';
+const productService = new ProductService();
 
-import { authContext } from "../context/contextUser";
-import { useContext, useState, useEffect } from "react";
+const p = Promise.resolve(productService.getPedidos());
+var appointments = [];
+try {
+  appointments = await p;
+} catch (err) {
+  console.log(err);
+}
+p;
+
+const Appointment = ({ children, style, ...restProps }) => (
+  <Appointments.Appointment
+    {...restProps}
+    style={{
+      ...style,
+      backgroundColor: "#f3bdd7",
+      borderRadius: "8px",
+    }}
+  >
+    {children}
+  </Appointments.Appointment>
+);
+
+const resources = [{
+  fieldName: 'priorityId',
+  title: 'Priority',
+  instances: [
+    { text: 'EN TRÁNSITO', id: "En Transito", color: blue },
+    { text: 'PREPARANDO', id: "Preparando", color: orange },
+    { text: 'COMPLETADO', id: "Completado", color: green }
+  ],
+}];
+
 
 const PREFIX = "Demo";
 const classes = {
@@ -162,7 +194,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     });
   }
 
-  commitAppointment(type) {
+  async commitAppointment(type) {
     const { commitChanges } = this.props;
     const appointment = {
       ...this.getAppointmentData(),
@@ -173,21 +205,49 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     } else if (type === "changed") {
       commitChanges({ [type]: { [appointment.id]: appointment } });
     } else {
-      let data = crearPedido(appointment);
-      if (data) {
-        /**
-         * id
-         * title(nombre pasteles separados por comasdalskdakjsdkajlsdljkasd )
-         * startDate(fecha entrega)
-         * endDate(fecha entrega +1 hora de difirencia)
-         */
-        commitChanges({ [type]: data });
-      }
+
+      var pasteles = [];
+      var pastel = {};
+      pastel.id = 1;
+      pastel.precio = 1000;
+      pastel.cantidad = 2;
+      pasteles.push(pastel);
+      var saveData = {};
+      // saveData.pasteles = pasteles;
+      saveData.direccion_Entrega = appointment.location;
+      saveData.observaciones_Pedido = appointment.observaciones_pedido;
+      saveData.estado = "PREPARANDO";
+      saveData.fecha_Entrega = appointment.startDate;
+      saveData.rut_Cliente = "197723750";
+      saveData.rut_Trabajador = "182384582";
+
+      //TODO: AQUI HAY ATAO MI PANA
+
+
+      console.log(saveData);
+      let response = await fetch(
+        "http://localhost:8080/Pedidos/ingresarPedido",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Request-With": "XMLHttpRequest",
+            "Access-Control-Allow-Origin": "origin-list",
+          },
+          body: JSON.stringify(saveData),
+        }
+      );
+      var newResponse = await response.text();
+
+      //FIN CREAR PEDIDO
+      commitChanges({ [type]: appointment });
+
     }
     this.setState({
       appointmentChanges: {},
     });
-  }
+  };
 
   render() {
     const {
@@ -255,16 +315,6 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       visibleChange();
       cancelAppointment();
     };
-
-    async function crearPedido(nuevoPedido) {
-      let data = await fetch("urlAPI", {
-        method: "POST",
-        headers: {},
-        body: { nuevoPedido },
-      }).then((data) => {
-        return data.json();
-      });
-    }
 
     const handleChange = (event) => {
       const {
@@ -378,15 +428,8 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                 label={"Observaciones pedido"}
               />
             </div>
-            <div className={classes.wrapper}>
-              <Notes className={classes.icon} color="action" />
-              <TextField
-                {...textEditorProps("observaciones_entrega")}
-                multiline
-                rows="6"
-                label={"Observaciones entrega"}
-              />
-            </div>
+
+
           </div>
           <div className={classes.buttonGroup}>
             {!isNewAppointment && (
@@ -577,6 +620,10 @@ export default class Calendar extends React.PureComponent {
           <MonthView displayName="MES" />
           <EditRecurrenceMenu />
           <Appointments />
+          <Resources
+            data={resources}
+            mainResourceName="priorityId"
+          />
           <AppointmentTooltip showOpenButton showCloseButton showDeleteButton />
           <Toolbar />
           <DateNavigator />

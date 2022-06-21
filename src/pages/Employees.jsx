@@ -57,7 +57,7 @@ export const Employees = () => {
   };
 
   //agregar trabajador 
-  const saveProduct = () => {
+  const saveProduct = async () => {
     setSubmitted(true);
     if (product.nombre.trim()) {
       let _products = [...products];
@@ -74,66 +74,55 @@ export const Employees = () => {
         setEditDialog(false);
       } else {
 
-        const processForm = async (e) => {
-          e.preventDefault()
-          const resp = await fetch(
-            "https://springgcp2-353703.rj.r.appspot.com/Registro/registrar",
-            {
-              method: "POST",
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                "rut": rut, "nombre": nombre, "apellidoPaterno": apellidoPaterno, "apellidoMaterno": apellidoMaterno,
-                "password": password, "telefono": telefono, "email": email, "direccion": direccion, "fechaIngreso": fechaIngreso, "permisos": category
-              })
-            }
-          )
-          const data = await resp.json().then((data) => {
-            console.log(data)
-            _products.push(_product);
-            toast.current.show({
-              severity: "success",
-              summary: "Completado",
-              detail: "Trabajador Creado",
-              life: 3000,
-            });
-            setProductDialog(false);
-          })
-          setProduct(_product);
+        var saveData = {};
+
+        saveData.rut = _product.rut;
+        saveData.nombre = _product.nombre;
+        saveData.apellidoPaterno = _product.apellidoPaterno;
+        saveData.apellidoMaterno = _product.apellidoMaterno;
+        saveData.password = _product.password;
+        saveData.telefono = _product.telefono;
+        saveData.email = _product.email;
+        saveData.direccion = _product.direccion;
+        saveData.fechaIngreso = fechaIngreso;
+        saveData.permisos = parseInt(_product.cargo);
+
+
+
+        let response = await fetch(
+          "http://localhost:8080/Registro/registrar",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            },
+            body: JSON.stringify(saveData),
+          }
+        );
+
+        var newResponse = await response.text();
+
+        if (_product.cargo == "1") {
+          _product.cargo = "Administrador";
+        } else {
+          _product.cargo = "Pastelero";
         }
 
-        /* var saveData = {};
-         saveData.rut = "12623878-9";
-         saveData.nombre = "Patricia";
-         saveData.apellido_Paterno = "Fernandez";
-         saveData.apellido_Materno = "Vidal";
-         saveData.password = "123456"
-         saveData.fecha_Ingreso = "2016-08-13"
-         saveData.id_Rol = 2;
-         console.log(saveData);
-         fetch("https://springgcp2-353703.rj.r.appspot.com/Registro/registrar", {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/json",
-             "Accept": "application/json",
-             "X-Request-With": "XMLHttpRequest",
-             "Access-Control-Allow-Origin": "origin-list",
-           },
-           body: JSON.stringify(saveData),
-         }).then((data) => {
-           console.log(data)
-           _products.push(_product);
-           toast.current.show({
-             severity: "success",
-             summary: "Completado",
-             detail: "Trabajador Creado",
-             life: 3000,
-           });
-           setProductDialog(false);
-         });*/
+        _product.nombre = _product.nombre + " " + _product.apellidoPaterno + " " + _product.apellidoMaterno;
+        _product.fechaIngreso = fechaIngreso;
+        _products.push(_product);
+        toast.current.show({
+          severity: "success",
+          summary: "Completado",
+          detail: "Trabajador Creado",
+          life: 3000,
+        });
+        setProductDialog(false);
       }
-
-
-
+      setProducts(_products);
     }
   };
 
@@ -355,7 +344,7 @@ export const Employees = () => {
               style={{ minWidth: "16rem" }}
             ></Column>
             <Column
-              field="fechacontrata"
+              field="fechaIngreso"
               align="center"
               header="Contrato"
               style={{ minWidth: "16rem" }}
@@ -482,9 +471,9 @@ export const Employees = () => {
                 <RadioButton
                   inputId="category1"
                   name="cargo"
-                  value="Administrador"
+                  value="1"
                   onChange={onCategoryChange}
-                  checked={product.cargo === "Administrador"}
+                  checked={product.cargo === "1"}
                 />
                 <label htmlFor="category1">Administrador</label>
               </div>
@@ -492,9 +481,9 @@ export const Employees = () => {
                 <RadioButton
                   inputId="category2"
                   name="cargo"
-                  value="Pastelero"
+                  value="2"
                   onChange={onCategoryChange}
-                  checked={product.cargo === "Pastelero"}
+                  checked={product.cargo === "2"}
                 />
                 <label htmlFor="category2">Pastelero</label>
               </div>
@@ -502,9 +491,9 @@ export const Employees = () => {
                 <RadioButton
                   inputId="category3"
                   name="cargo"
-                  value="Repartidor"
+                  value="3"
                   onChange={onCategoryChange}
-                  checked={product.cargo === "Repartidor"}
+                  checked={product.cargo === "3"}
                 />
                 <label htmlFor="category3">Repartidor</label>
               </div>

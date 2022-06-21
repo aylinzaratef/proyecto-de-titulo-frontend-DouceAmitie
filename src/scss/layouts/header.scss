@@ -1,4 +1,5 @@
 @import "../variables.scss";
+
 .bg-rosa {
     background-color: $color_1;
 }
@@ -16,7 +17,7 @@
 }
 
 .c-chocolate {
-    color: $color_12 !important;
+    color: $color_12  !important;
 }
 
 .rosaclaro {
@@ -40,19 +41,19 @@
 }
 
 .todo-rosa * {
-    color: $color_rosafuerte !important;
+    color: $color_rosafuerte  !important;
 }
 
 .btn-rosa {
     color: #ffffff !important;
-    background-color: $color_rosafuerte !important;
-    border-color: $color_rosafuerte !important;
+    background-color: $color_rosafuerte  !important;
+    border-color: $color_rosafuerte  !important;
 }
 
 .btn-rosa:hover {
-    color: $color_rosafuerte !important;
-    background-color: $color_dorado !important;
-    border-color: $color_dorado !important;
+    color: $color_rosafuerte  !important;
+    background-color: $color_dorado  !important;
+    border-color: $color_dorado  !important;
 }
 
 .img-calendario {
@@ -70,7 +71,7 @@
 }
 
 .Cell-today {
-    background-color: $color_dorado !important;
+    background-color: $color_dorado  !important;
 }
 
 .Appointment-appointment * {
@@ -78,7 +79,7 @@
 }
 
 .card-login {
-    background: linear-gradient( to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3)) !important;
+    background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3)) !important;
     border-radius: 2rem;
     border-color: #ffcd68 !important;
     z-index: 2;
@@ -127,9 +128,22 @@
 
 .p-dataview-content {
     background: rgb(246, 191, 159) !important;
-    background: linear-gradient( 90deg, rgba(246, 191, 159, 1) 20%, #e1758e 100%) !important;
+    background: linear-gradient(90deg, rgba(246, 191, 159, 1) 20%, #e1758e 100%) !important;
 }
 
 .p-link {
     display: none;
+}
+
+.TodayButton-button {
+    visibility: hidden;
+}
+
+.TodayButton-button::after {
+    content: "HOY";
+    visibility: visible;
+    border: 1px solid #dd1d5f;
+    padding: 0.5rem 2rem;
+    border-radius: 0.2rem;
+    border-color: #dd1d5f;
 }

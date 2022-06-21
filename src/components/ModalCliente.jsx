@@ -66,7 +66,7 @@ export const ModalCliente = () => {
               <div className="col-12 mt-3">
                 <TextField
                   id="cliente-apellidopaterno"
-                  label="Apellido Paterno"
+                  label="Primer Apellido"
                   variant="outlined"
                   fullWidth
                 />
@@ -74,7 +74,7 @@ export const ModalCliente = () => {
               <div className="col-12 mt-3">
                 <TextField
                   id="cliente-apellidomaterno"
-                  label="Apellido Materno"
+                  label="Segundo Apellido"
                   variant="outlined"
                   fullWidth
                 />

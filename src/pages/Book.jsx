@@ -16,15 +16,7 @@ import { Video } from "../components/VideoPlayer";
 
 export const Book = () => {
   let emptyProduct = {
-    id: null,
-    name: "",
-    image: null,
-    description: "",
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: "INSTOCK",
+
   };
 
   const [products, setProducts] = useState(null);
@@ -41,15 +33,13 @@ export const Book = () => {
   const productService = new ProductService();
 
   useEffect(() => {
-    productService.getProducts().then((data) => setProducts(data));
+    productService.getRecetas().then((data) => setProducts(data));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   //PEDIDOS TRAE FECHA Y HORA
   let date = new Date();
   var FechaIngreso = date.toISOString();
-
-  console.log(FechaIngreso);
 
   const customBase64Uploader = async (event) => {
     // convert file to base64 encoded
@@ -87,7 +77,7 @@ export const Book = () => {
     setDeleteProductDialog(false);
   };
 
-  const saveProduct = () => {
+  const saveProduct = async () => {
     setSubmitted(true);
 
     if (product.nombre.trim()) {
@@ -105,8 +95,33 @@ export const Book = () => {
         });
         setEditDialog(false);
       } else {
-        _product.id = createId();
-        _product.image = "product-placeholder.svg";
+
+        //GUARDAR RECETA 
+        var saveData = {};
+
+        saveData.imagen = _product.imagen;
+        saveData.nombre = _product.nombre;
+        saveData.categoria = _product.categoria;
+        saveData.ingredientes = _product.ingredientes;
+        saveData.preparacion = _product.preparacion;
+        saveData.precio = _product.precio;
+        saveData.descripcion = _product.descripcion;
+        saveData.urlVideo = _product.video;
+
+        console.log(_product);
+        let response = await fetch(
+          "http://localhost:8080/Recetas/ingresarReceta",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            },
+            body: JSON.stringify(saveData),
+          }
+        );
         _products.push(_product);
         toast.current.show({
           severity: "success",
@@ -201,13 +216,13 @@ export const Book = () => {
     return (
       <div className="text-center">
         <img
-          src={`images/product/${rowData.image}`}
+          src={`${rowData.imagen}`}
           onError={(e) =>
           (e.target.src =
-            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+            "https://www.elsoldemexico.com.mx/doble-via/virales/ey580c-cheems.jpg/alternates/LANDSCAPE_768/Cheems.jpg")
           }
-          alt={rowData.image}
-          className="product-image"
+          alt={rowData.imagen}
+          className="product-image imagen-tabla"
         />
       </div>
     );
@@ -358,17 +373,7 @@ export const Book = () => {
           footer={productDialogFooter}
           onHide={hideDialog}
         >
-          {product.image && (
-            <img
-              src={`images/product/${product.image}`}
-              onError={(e) =>
-              (e.target.src =
-                "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-              }
-              alt={product.image}
-              className="product-image block m-auto pb-3"
-            />
-          )}
+
           <div className="field">
             <label htmlFor="name">Nombre</label>
             <InputText
@@ -450,6 +455,16 @@ export const Book = () => {
                 />
                 <label htmlFor="category4">Bizcocho</label>
               </div>
+              <div className="field-radiobutton col-6">
+                <RadioButton
+                  inputId="category5"
+                  name="categoria"
+                  value="Queque"
+                  onChange={onCategoryChange}
+                  checked={product.categoria === "Queque"}
+                />
+                <label htmlFor="category5">Queque</label>
+              </div>
             </div>
           </div>
           <div className="field mt-3 row">
@@ -472,15 +487,67 @@ export const Book = () => {
               </div>
             </div>
             <div className="col-6">
-              <label htmlFor="imagen"> Imagen</label>
-              <FileUpload
-                chooseLabel="Cargar..."
-                mode="basic"
-                name="imagen[]"
-                url="https://primefaces.org/primereact/showcase/upload.php"
-                accept="image/*"
-                customUpload
-                uploadHandler={customBase64Uploader}
+              <div className="field">
+                <label htmlFor="name">URL Imagen</label>
+                <InputText
+                  id="imagen"
+                  value={product.imagen}
+                  onChange={(e) => onInputChange(e, "imagen")}
+                  required
+                  autoFocus
+                  className={classNames({
+                    "p-invalid": submitted && !product.imagen,
+                  })}
+                />
+                {submitted && !product.imagen && (
+                  <small className="p-error">URL de imagen es requerido.</small>
+                )}
+              </div>
+            </div>
+            <div className="imagen-vista text-right">
+              {product.imagen && (
+                <img
+                  src={`${product.imagen}`}
+                  onError={(e) =>
+                  (e.target.src =
+                    "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+                  }
+                  alt={product.imagen}
+                  className="product-image block m-auto pb-3 imagen-vista"
+                />
+              )}
+            </div>
+
+            <div className="col-12 mt-3">
+              <h5>
+                Datos del pastel
+              </h5>
+            </div>
+            <div className="field">
+              <label htmlFor="precio">Precio Unitario</label>
+              <InputText
+                id="precio"
+                value={product.precio}
+                onChange={(e) => onInputChange(e, "precio")}
+                required
+                autoFocus
+                className={classNames({
+                  "p-invalid": submitted && !product.precio,
+                })}
+              />
+              {submitted && !product.precio && (
+                <small className="p-error">Precio es requerido.</small>
+              )}
+            </div>
+            <div className="field mt-3">
+              <label htmlFor="descripcion">Descripción</label>
+              <InputTextarea
+                id="descripcion"
+                value={product.descripcion}
+                onChange={(e) => onInputChange(e, "descripcion")}
+                required
+                rows={3}
+                cols={20}
               />
             </div>
           </div>
@@ -496,14 +563,15 @@ export const Book = () => {
           footer={productDialogFooter2}
           onHide={hideEditDialog}
         >
-          {product.image && (
+          {product.imagen && (
             <img
-              src={`images/product/${product.image}`}
+              src={`${product.imagen}`}
               onError={(e) =>
               (e.target.src =
-                "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+                product.imagen
+              )
               }
-              alt={product.image}
+              alt={product.imagen}
               className="product-image block m-auto pb-3"
             />
           )}
@@ -588,6 +656,16 @@ export const Book = () => {
                 />
                 <label htmlFor="category4">Bizcocho</label>
               </div>
+              <div className="field-radiobutton col-6">
+                <RadioButton
+                  inputId="category5"
+                  name="categoria"
+                  value="Queque"
+                  onChange={onCategoryChange}
+                  checked={product.categoria === "Queque"}
+                />
+                <label htmlFor="category5">Queque</label>
+              </div>
             </div>
           </div>
           <div className="field mt-3 row">
@@ -632,28 +710,37 @@ export const Book = () => {
           className="p-fluid"
           onHide={hideViewDialog}
         >
-          {product.image && (
-            <img
-              src={`images/product/${product.image}`}
-              onError={(e) =>
-              (e.target.src =
-                "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-              }
-              alt={product.image}
-              className="product-image block m-auto pb-3"
-            />
+          {product.imagen && (
+
+            <div className="text-center">
+              <img
+                src={`images/product/${product.imagen}`}
+                onError={(e) =>
+                (e.target.src =
+                  product.imagen)
+                }
+                alt={product.imagen}
+                className="product-image block m-auto pb-3 imagen-vista"
+              />
+            </div>
+
+
           )}
           <div className="field">
-            <label htmlFor="name">Nombre</label>
+            <label htmlFor="name"><b>Nombre</b></label>
+            <p>{product.nombre}</p>
           </div>
           <div className="field mt-3">
-            <label htmlFor="description">Ingredientes</label>
+            <label htmlFor="description"><b>Ingredientes</b></label>
+            <p>{product.ingredientes}</p>
           </div>
           <div className="field mt-3">
-            <label htmlFor="description">Preparación</label>
+            <label htmlFor="description"><b>Preparación</b></label>
+            <p>{product.preparacion}</p>
           </div>
           <div className="field mt-3">
-            <label className="mb-3">Tipo</label>
+            <label className="mb-3"><b>Tipo </b></label>
+            <label className="mx-2">{product.categoria}</label>
           </div>
           <div className="container" align="center">
             <div className="field mt-3">
