@@ -58,6 +58,32 @@ try {
   console.log(err);
 }
 p;
+const c = Promise.resolve(productService.getClientes());
+var clienteslist = [];
+try {
+  clienteslist = await c;
+} catch (err) {
+  console.log(err);
+}
+c;
+const t = Promise.resolve(productService.getEmployees());
+var trabajadorlist = [];
+try {
+  trabajadorlist = await t;
+} catch (err) {
+  console.log(err);
+}
+t;
+
+const pl = Promise.resolve(productService.getPastel());
+var pasteleslist = [];
+try {
+  pasteleslist = await pl;
+
+} catch (err) {
+  console.log(err);
+}
+pl;
 
 const Appointment = ({ children, style, ...restProps }) => (
   <Appointments.Appointment
@@ -156,10 +182,7 @@ const MenuProps = {
   },
 };
 
-const namesPastel = {
-  1: "Torta",
-  2: "Brownie",
-};
+const pastelesIDList = [];
 
 class AppointmentFormContainerBasic extends React.PureComponent {
   constructor(props) {
@@ -167,7 +190,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 
     this.state = {
       appointmentChanges: {},
-      pastelList: [],
+      pastelList: [], pastelesIDList,
       clienteID: 0,
     };
 
@@ -216,15 +239,15 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       // saveData.pasteles = pasteles;
       saveData.direccion_Entrega = appointment.location;
       saveData.observaciones_Pedido = appointment.observaciones_pedido;
-      saveData.estado = "PREPARANDO";
-      saveData.fecha_Entrega = appointment.startDate;
-      saveData.rut_Cliente = "197723750";
-      saveData.rut_Trabajador = "182384582";
-
+      saveData.estado = "Preparando";
+      saveData.fecha_Entrega = appointment.startDate.toISOString();
+      saveData.rut_Cliente = appointment.cliente;
+      saveData.rut_Trabajador = appointment.trabajador;
+      saveData.pasteles = pastelesIDList;
       //TODO: AQUI HAY ATAO MI PANA
 
 
-      console.log(saveData);
+      console.log("hola ", saveData);
       let response = await fetch(
         "http://localhost:8080/Pedidos/ingresarPedido",
         {
@@ -258,7 +281,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       target,
       onHide,
     } = this.props;
-    const { appointmentChanges, pastelList, clienteID } = this.state;
+    const { appointmentChanges, pastelList, clienteID, trabajadorID } = this.state;
 
     const displayAppointmentData = {
       ...appointmentData,
@@ -316,18 +339,52 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       cancelAppointment();
     };
 
+    function saveID(idPastel, nombre) {
+
+
+      console.log("pastellist ", pastelList);
+      let existe = false;
+      pastelList.forEach(pastel => {
+
+        if (pastel == nombre) {
+          existe = true;
+        }
+        console.log(pastel);
+
+
+
+
+      })
+      if (existe == false) {
+        pastelesIDList.push(idPastel);
+      } else {
+        let index = pastelesIDList.indexOf(idPastel);
+        if (index > -1) {
+          pastelesIDList.splice(index, 1);
+        }
+      }
+
+
+    }
+
+
     const handleChange = (event) => {
+
       const {
         target: { value },
       } = event;
 
+
       this.setState({
         pastelList: typeof value === "string" ? value.split(",") : value,
+
       });
       this.changeAppointment({
         field: "title",
         changes: typeof value === "string" ? value : value.join(","),
       });
+
+      console.log(event);
     };
 
     const userHandleChange = (event) => {
@@ -339,6 +396,19 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       });
       this.changeAppointment({
         field: "cliente",
+        changes: value,
+      });
+    };
+
+    const userHandleChangeTrabajador = (event) => {
+      const {
+        target: { value },
+      } = event;
+      this.setState({
+        trabajadorID: value,
+      });
+      this.changeAppointment({
+        field: "trabajador",
         changes: value,
       });
     };
@@ -374,12 +444,13 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                   renderValue={(selected) => selected.join(", ")}
                   MenuProps={MenuProps}
                 >
-                  {Object.keys(namesPastel).map((key) => (
-                    <MenuItem key={key} value={namesPastel[key]}>
+                  {Object.keys(pasteleslist).map((key) => (
+                    <MenuItem key={key} value={pasteleslist[key].nombre} data-id={pasteleslist[key].idPastel} >
                       <Checkbox
-                        checked={pastelList.indexOf(namesPastel[key]) > -1}
+                        checked={pastelList.indexOf(pasteleslist[key].nombre) > -1}
+                        onClick={() => saveID(pasteleslist[key].idPastel, pasteleslist[key].nombre)}
                       />
-                      <ListItemText primary={namesPastel[key]} />
+                      <ListItemText primary={pasteleslist[key].nombre} />
                     </MenuItem>
                   ))}
                 </Select>
@@ -408,9 +479,12 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                   label="Cliente"
                   onChange={userHandleChange}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {Object.keys(clienteslist).map((key) => (
+                    <MenuItem key="clienteID" value={clienteslist[key].rut}>{clienteslist[key].nombre}</MenuItem>
+                  ))}
+
+
+
                 </Select>
               </FormControl>
               <ModalCliente />
@@ -427,6 +501,27 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                 rows="6"
                 label={"Observaciones pedido"}
               />
+            </div>
+
+            <div className={classes.wrapper}>
+              <Create className={classes.icon} color="action" />
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label-trabajador">Trabajador</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label-trabajador"
+                  id="demo-simple-select-trabajador"
+                  value={trabajadorID}
+                  label="Cliente"
+                  onChange={userHandleChangeTrabajador}
+                >
+                  {Object.keys(trabajadorlist).map((key) => (
+
+                    <MenuItem key="trabajadorID" value={trabajadorlist[key].rut}>{trabajadorlist[key].nombre}</MenuItem>
+
+                  ))}
+
+                </Select>
+              </FormControl>
             </div>
 
 

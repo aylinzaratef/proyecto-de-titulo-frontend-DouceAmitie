@@ -118,4 +118,64 @@ export class ProductService {
         return recetas;
 
     }
+
+    getClientes = async () => {
+
+        var cliente = []; //OBJETO QUE RECIBE LOS DATOS DESDE LA URL API 
+
+
+        let data = await fetch('http://localhost:8080/Pedidos/getClientes', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Request-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "origin-list"
+            }
+        }).then(data => {
+            return data.json();
+        });
+
+        Object.keys(data).forEach(function (key) {
+            let newData = {};
+            newData.rut = data[key].rut;
+            newData.nombre = data[key].nombre + " " + data[key].apellidoPaterno + " " + data[key].apellidoMaterno;
+            newData.telefono = data[key].telefono;
+            newData.email = data[key].email;
+            cliente.push(newData);
+        });
+
+        return cliente;
+
+    }
+
+
+    getPastel = async () => {
+        var pasteles = []; //OBJETO
+        let data = await fetch('http://localhost:8080/Recetas/getPasteles', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Request-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "origin-list"
+            }
+        }).then(data => {
+            return data.json();
+        });
+
+        Object.keys(data).forEach(function (key) {
+            let newData = {};
+            newData.idPastel = data[key].idPastel;
+            newData.nombre = data[key].nombre;
+            console.log("soy el pastel ", data);
+
+            pasteles.push(newData);
+        });
+
+        return pasteles;
+
+    }
+
+
 }
