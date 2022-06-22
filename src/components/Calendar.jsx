@@ -48,6 +48,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { ModalCliente } from "./ModalCliente";
 import { ProductService } from "../components/ProductService";
 import { blue, orange, green } from '@mui/material/colors';
+
 const productService = new ProductService();
 
 const p = Promise.resolve(productService.getPedidos());
@@ -192,6 +193,9 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       appointmentChanges: {},
       pastelList: [], pastelesIDList,
       clienteID: 0,
+      pastelID: 0,
+      cantidadID: 0,
+      dataPasteles: []
     };
 
     this.getAppointmentData = () => {
@@ -239,11 +243,13 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       // saveData.pasteles = pasteles;
       saveData.direccion_Entrega = appointment.location;
       saveData.observaciones_Pedido = appointment.observaciones_pedido;
-      saveData.estado = "Preparando";
-      saveData.fecha_Entrega = appointment.startDate.toISOString();
-      saveData.rut_Cliente = appointment.cliente;
-      saveData.rut_Trabajador = appointment.trabajador;
-      saveData.pasteles = pastelesIDList;
+      saveData.estado = "En transito";
+      const entrega = new Date(appointment.startDate);
+      entrega.setHours(entrega.getHours() - 4);
+      saveData.fecha_Entrega = entrega.toISOString();
+      saveData.datos_cliente = appointment.cliente;
+      saveData.datos_encargado = appointment.trabajador;
+      saveData.pasteles = this.state.dataPasteles;
       //TODO: AQUI HAY ATAO MI PANA
 
 
@@ -260,8 +266,11 @@ class AppointmentFormContainerBasic extends React.PureComponent {
           },
           body: JSON.stringify(saveData),
         }
+
       );
       var newResponse = await response.text();
+
+      appointment.title = saveData.datos_cliente;
 
       //FIN CREAR PEDIDO
       commitChanges({ [type]: appointment });
@@ -281,7 +290,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       target,
       onHide,
     } = this.props;
-    const { appointmentChanges, pastelList, clienteID, trabajadorID } = this.state;
+    const { appointmentChanges, pastelList, clienteID, trabajadorID, pastelID, cantidadID, dataPasteles } = this.state;
 
     const displayAppointmentData = {
       ...appointmentData,
@@ -339,33 +348,8 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       cancelAppointment();
     };
 
-    function saveID(idPastel, nombre) {
 
 
-      console.log("pastellist ", pastelList);
-      let existe = false;
-      pastelList.forEach(pastel => {
-
-        if (pastel == nombre) {
-          existe = true;
-        }
-        console.log(pastel);
-
-
-
-
-      })
-      if (existe == false) {
-        pastelesIDList.push(idPastel);
-      } else {
-        let index = pastelesIDList.indexOf(idPastel);
-        if (index > -1) {
-          pastelesIDList.splice(index, 1);
-        }
-      }
-
-
-    }
 
 
     const handleChange = (event) => {
@@ -413,6 +397,34 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       });
     };
 
+    const userHandleChangePastel = (event) => {
+      const {
+        target: { value },
+      } = event;
+      this.setState({
+        pastelID: value,
+      });
+      this.changeAppointment({
+        field: "pastel",
+        changes: value,
+      });
+    };
+
+    const userHandleChangeCantidad = (event) => {
+      const {
+        target: { value },
+      } = event;
+      this.setState({
+        cantidadID: value,
+      });
+      this.changeAppointment({
+        field: "cantidad",
+        changes: value,
+      });
+    };
+
+
+
     return (
       <AppointmentForm.Overlay
         visible={visible}
@@ -431,31 +443,97 @@ class AppointmentFormContainerBasic extends React.PureComponent {
             </IconButton>
           </div>
           <div className={classes.content}>
-            <div className={classes.wrapper}>
-              <Create className={classes.icon} color="action" />
-              <FormControl className={classes.textField}>
-                <InputLabel>Pasteles</InputLabel>
-                <Select
-                  id="demo-multiple-checkbox"
-                  multiple={true}
-                  value={pastelList}
-                  onChange={handleChange}
-                  input={<OutlinedInput label="Pasteles" />}
-                  renderValue={(selected) => selected.join(", ")}
-                  MenuProps={MenuProps}
-                >
-                  {Object.keys(pasteleslist).map((key) => (
-                    <MenuItem key={key} value={pasteleslist[key].nombre} data-id={pasteleslist[key].idPastel} >
-                      <Checkbox
-                        checked={pastelList.indexOf(pasteleslist[key].nombre) > -1}
-                        onClick={() => saveID(pasteleslist[key].idPastel, pasteleslist[key].nombre)}
-                      />
-                      <ListItemText primary={pasteleslist[key].nombre} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <div className="row">
+              <div className="col-6">
+                <div className={classes.wrapper}>
+                  <Create className={classes.icon} color="action" />
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label-pastel">Pasteles</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label-pastel"
+                      id="demo-simple-select-pastel"
+                      value={pastelID}
+                      label="Cliente"
+                      onChange={userHandleChangePastel}
+                    >
+                      {Object.keys(pasteleslist).map((key) => (
+
+                        <MenuItem key={key} value={pasteleslist[key].idPastel}>{pasteleslist[key].nombre}</MenuItem>
+                      ))}
+
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className={classes.wrapper}>
+
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label-cantidad">Cantidad</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label-cantidad"
+                      id="demo-simple-select-cantidad"
+                      value={cantidadID}
+                      label="Cliente"
+                      onChange={userHandleChangeCantidad}
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                      <MenuItem value={6}>6</MenuItem>
+                      <MenuItem value={7}>7</MenuItem>
+                      <MenuItem value={8}>8</MenuItem>
+                      <MenuItem value={9}>9</MenuItem>
+                      <MenuItem value={10}>10</MenuItem>
+
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              <div className="col-2">
+                <button className="btn btn-rosado mt-3" onClick={() => {
+                  const pastel = pasteleslist.find(x => x.idPastel == pastelID)
+                  this.setState({
+                    dataPasteles: this.state.dataPasteles.concat({ nombre: pastel.nombre || " ", cantidad: cantidadID, idPastel: pastelID, valor: pastel.valor || " " })
+                  })
+                }}>+</button>
+              </div>
+              <div className="col-12 my-3">
+                <table className="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th className="text-center" scope="col">Nombre Pastel </th>
+                      <th className="text-center" scope="col">Cantidad</th>
+                      <th className="text-center" scope="col">Precio</th>
+                      <th className="text-center" scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="listaPasteles">
+                    {Object.keys(this.state.dataPasteles).map((key) => {
+                      return (
+                        <tr key={key}>
+                          <td className="text-center">{this.state.dataPasteles[key].nombre}</td>
+                          <td className="text-center">{this.state.dataPasteles[key].cantidad}</td>
+                          <td className="text-center">{new Intl.NumberFormat('es-CL', { currency: 'CLP', style: 'currency' }).format(this.state.dataPasteles[key].valor)}</td>
+                          <td className="text-center"><button className="btn btn-rosado" onClick={() =>
+                            this.setState({
+                              dataPasteles: dataPasteles.filter(x => x != dataPasteles[key])
+                            })
+                          }>Eliminar</button></td>
+                        </tr>
+                      )
+                    })}
+
+                  </tbody>
+                </table>
+              </div>
             </div>
+
+
+
+
             <div className={classes.wrapper}>
               <CalendarToday className={classes.icon} color="action" />
               <LocalizationProvider dateAdapter={AdapterMoment}>

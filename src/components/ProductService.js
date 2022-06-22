@@ -40,7 +40,7 @@ export class ProductService {
 
             trabajadores.push(newData);
 
-            console.log(data);
+
         });
 
         return trabajadores;
@@ -78,7 +78,7 @@ export class ProductService {
             newData.priorityId = data[key].estado;
             pedidos.push(newData);
 
-            console.log(data);
+
         });
 
 
@@ -110,7 +110,7 @@ export class ProductService {
             newData.preparacion = data[key].preparacion;
             newData.video = data[key].urlVideo;
             newData.id = data[key].id_Pastel;
-            console.log()
+
 
             recetas.push(newData);
         });
@@ -151,8 +151,8 @@ export class ProductService {
 
 
     getPastel = async () => {
-        var pasteles = []; //OBJETO
-        let data = await fetch('http://localhost:8080/Recetas/getPasteles', {
+        var pasteles = []; //ARREGLO BASICO
+        let data = await fetch('http://localhost:8080/Recetas/getPasteles', { //OBTIENE INFORMACION DESDE BACK 
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -160,22 +160,20 @@ export class ProductService {
                 "X-Request-With": "XMLHttpRequest",
                 "Access-Control-Allow-Origin": "origin-list"
             }
-        }).then(data => {
-            return data.json();
+        }).then(data => { //ASIGNA VALORES QUE ESTAN EN EL PARENTESIS CON DATA CURSIVA
+            return data.json(); // TRANSFORMA LOS DATOS DEL BACK EN JSON Y ASIGNA A DATA CURSIVA UWU 
         });
 
-        Object.keys(data).forEach(function (key) {
-            let newData = {};
-            newData.idPastel = data[key].idPastel;
+        Object.keys(data).forEach(function (key) {  //BACK RETORNA JSON ESTA ES LA MANERA DE RECORRERLO
+            let newData = {};  //INICIALIZANDO OBJETO
+            newData.idPastel = data[key].idPastel; //A NEWDATA  SE LE CREA UN INDICE (QUE EN ESTE CASO ES IDPASTEL) Y A ESE INDICE SE LE ASIGNA UN VALOR QUE VIENE DESDE EL BACK EN ESTE CASO ES DATA[KEY]
             newData.nombre = data[key].nombre;
-            console.log("soy el pastel ", data);
+            newData.valor = data[key].precio;
+            pasteles.push(newData); //AGREGA AL ARREGLO
 
-            pasteles.push(newData);
         });
 
-        return pasteles;
+        return pasteles; //RETORNA EN VISTA
 
     }
-
-
 }
