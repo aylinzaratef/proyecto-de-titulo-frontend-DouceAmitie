@@ -101,7 +101,7 @@ export const Landing = () => {
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-md-12 col-lg-12 col-xl-12">
-
+              {/*Aqui va el banner quedo muy enano hay que agrandarlo XD*/}     <img className="" src="/images/banner.png"></img>
             </div>
           </div>
         </div>

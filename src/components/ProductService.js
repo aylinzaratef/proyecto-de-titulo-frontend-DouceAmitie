@@ -2,6 +2,17 @@
 
 
 export class ProductService {
+
+    getProductosDestacados() {
+        return fetch('data/products-small.json').then(res => res.json()).then(d => d.data);
+    }
+
+    getProducts() {
+        return fetch('data/products.json').then(res => res.json()).then(d => d.data);
+    }
+
+
+
     getEmployees = async () => {
         var trabajadores = []; //OBJETO QUE RECIBE LOS DATOS DESDE LA URL API 
         let data = await fetch('http://localhost:8080/Pasteleros/getAll', {

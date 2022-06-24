@@ -83,19 +83,6 @@ try {
 }
 pl;
 
-const Appointment = ({ children, style, ...restProps }) => (
-  <Appointments.Appointment
-    {...restProps}
-    style={{
-      ...style,
-      backgroundColor: "#f3bdd7",
-      borderRadius: "8px",
-    }}
-  >
-    {children}
-  </Appointments.Appointment>
-);
-
 const resources = [{
   fieldName: 'priorityId',
   title: 'Priority',

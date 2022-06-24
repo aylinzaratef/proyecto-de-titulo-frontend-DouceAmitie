@@ -19,6 +19,7 @@
     "@mui/lab": "^5.0.0-alpha.82",
     "@mui/material": "^5.7.0",
     "chart.js": "^3.7.1",
+    "clsx": "^1.1.1",
     "final-form": "^4.20.7",
     "primeicons": "^5.0.0",
     "primereact": "^8.0.1",

@@ -23,6 +23,29 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
+import classNames from 'clsx';
+import IconButton from '@mui/material/IconButton';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import Grid from '@mui/material/Grid';
+import Room from '@mui/icons-material/Room';
+const PREFIX = "Demo";
+const classes = {
+  icon: `${PREFIX}-icon`,
+  textCenter: `${PREFIX}-textCenter`,
+  firstRoom: `${PREFIX}-firstRoom`,
+  secondRoom: `${PREFIX}-secondRoom`,
+  thirdRoom: `${PREFIX}-thirdRoom`,
+  header: `${PREFIX}-header`,
+  commandButton: `${PREFIX}-commandButton`,
+};
+
+
+const getClassByLocation = (location) => {
+  if (location === 'Room 1') return classes.firstRoom;
+  if (location === 'Room 2') return classes.secondRoom;
+  return classes.thirdRoom;
+};
+
 const StyledAppointmentTooltipHeader = styled(AppointmentTooltip.Header)(() => ({
   [`&.${classes.firstRoom}`]: {
     background: 'url(https://js.devexpress.com/Demos/DXHotels/Content/Pictures/Lobby-4.jpg)',
@@ -66,6 +89,12 @@ const Header = (({
     </StyledIconButton>
   </StyledAppointmentTooltipHeader>
 ));
+const StyledIconButton = styled(IconButton)(() => ({
+  [`&.${classes.commandButton}`]: {
+    backgroundColor: 'rgba(255,255,255,0.65)',
+  },
+}));
+
 
 
 export default class CalendarTrabajador extends React.PureComponent {
@@ -157,7 +186,7 @@ export default class CalendarTrabajador extends React.PureComponent {
             data={resources}
             mainResourceName="priorityId"
           />
-          <AppointmentTooltip showCloseButton showDeleteButton />
+          <AppointmentTooltip showCloseButton headerComponent={Header} showDeleteButton />
           <Toolbar />
           <DateNavigator />
           <TodayButton />
