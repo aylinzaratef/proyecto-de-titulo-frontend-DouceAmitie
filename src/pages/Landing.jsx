@@ -97,17 +97,16 @@ export const Landing = () => {
           </div>
         </div>
       </nav >
-      <section className="page-section portfolio" id="">
+      <section className="page-section portfolio banner-landing" id="">
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-md-12 col-lg-12 col-xl-12">
-              {/*Aqui va el banner quedo muy enano hay que agrandarlo XD*/}     <img className="" src="/images/banner.png"></img>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="page-section bg-header portfolio" id="portfolio">
+      <section className="page-section  portfolio" id="portfolio">
         <h2 className="page-section-heading text-center text-uppercase c-chocolate my-4">
           Destacados
         </h2>
@@ -121,12 +120,12 @@ export const Landing = () => {
         <Carrusel />
       </section>
 
-      <section className="page-section c-chocolate mb-0" id="about">
+      <section className="page-section bg-header c-chocolate mb-0" id="about">
         <div className="container">
           <h2 className="page-section-heading text-center text-uppercase c-chocolate">
             About
           </h2>
-          <div className="divider-custom divider-light">
+          <div className="divider-custom divider">
             <div className="divider-custom-line"></div>
             <div className="divider-custom-icon">
               <i className="fas fa-star"></i>
@@ -153,7 +152,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      <section class="page-section pb-100 bg-header pt-5 mt-3" id="clientes">
+      <section class="page-section pb-100  pt-5 mt-3" id="clientes">
         <div class="container">
           <h2 className="page-section-heading text-center text-uppercase c-chocolate my-4">
             Clientes
@@ -186,7 +185,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      <footer className="footer text-center bg-white c-chocolate">
+      <footer className="footer text-center bg-header c-chocolate">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 mb-5 mb-lg-0">
