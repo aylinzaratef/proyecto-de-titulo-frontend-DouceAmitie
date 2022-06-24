@@ -2,20 +2,8 @@
 
 
 export class ProductService {
-
-    getProductosDestacados() {
-        return fetch('data/products-small.json').then(res => res.json()).then(d => d.data);
-    }
-
-    getProducts() {
-        return fetch('data/products.json').then(res => res.json()).then(d => d.data);
-    }
-
     getEmployees = async () => {
-
         var trabajadores = []; //OBJETO QUE RECIBE LOS DATOS DESDE LA URL API 
-
-
         let data = await fetch('http://localhost:8080/Pasteleros/getAll', {
             method: "GET",
             headers: {
@@ -74,8 +62,10 @@ export class ProductService {
             })
             newData.title = "Pedido Nro: " + data[key].id_Pedido + " " + data[key].datos_cliente +
                 ", Dirección: " + data[key].direccion_Entrega + ", Productos: " + nombrePastel + " Encargado: "
-                + data[key].datos_encargado;
+                + data[key].datos_encargado + ", Valor Total: " + data[key].valor_total;
             newData.priorityId = data[key].estado;
+            newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
+
             pedidos.push(newData);
 
 

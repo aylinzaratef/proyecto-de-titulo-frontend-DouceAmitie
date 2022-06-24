@@ -101,7 +101,7 @@ export const Landing = () => {
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-md-12 col-lg-12 col-xl-12">
-              <Carrusel />
+
             </div>
           </div>
         </div>
@@ -118,7 +118,7 @@ export const Landing = () => {
           </div>
           <div className="divider-custom-line"></div>
         </div>
-        <Cards />
+        <Carrusel />
       </section>
 
       <section className="page-section c-chocolate mb-0" id="about">

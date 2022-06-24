@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { TextField } from "@mui/material";
+import { useState } from "react";
 
 const style = {
   position: "absolute",
@@ -17,11 +18,37 @@ const style = {
   p: 4,
 };
 
-export const ModalCliente = () => {
+export const ModalCliente = ({ setList }) => {
   const [open, setOpen] = React.useState(false);
+  const [cliente, setCliente] = useState({});
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const datosClientes = (e, name) => {
+    const valor = (e.target && e.target.value) || "";
+    let _cliente = { ...cliente };
+    _cliente[`${name}`] = valor;
 
+    setCliente(_cliente);
+  }
+  const saveCliente = async () => {
+    var saveData = {};
+    let response = await fetch("http://localhost:8080/Pedidos/registrarCliente", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Request-With": "XMLHttpRequest",
+        "Access-Control-Allow-Origin": "origin-list"
+      },
+
+      body: JSON.stringify(cliente),
+    })
+
+    var newResponse = await response.text();
+    cliente.nombre = cliente.nombre + " " + cliente.apellidoPaterno + " " + cliente.apellidoMaterno
+    setList(cliente);
+    setOpen(false);
+  }
   return (
     <div>
       <button
@@ -53,6 +80,7 @@ export const ModalCliente = () => {
                   label="RUT"
                   variant="outlined"
                   fullWidth
+                  onChange={(e) => datosClientes(e, "rut")}
                 />
               </div>
               <div className="col-12 mt-3">
@@ -61,6 +89,7 @@ export const ModalCliente = () => {
                   label="Nombre"
                   variant="outlined"
                   fullWidth
+                  onChange={(e) => datosClientes(e, "nombre")}
                 />
               </div>
               <div className="col-12 mt-3">
@@ -69,6 +98,7 @@ export const ModalCliente = () => {
                   label="Primer Apellido"
                   variant="outlined"
                   fullWidth
+                  onChange={(e) => datosClientes(e, "apellidoPaterno")}
                 />
               </div>
               <div className="col-12 mt-3">
@@ -77,6 +107,7 @@ export const ModalCliente = () => {
                   label="Segundo Apellido"
                   variant="outlined"
                   fullWidth
+                  onChange={(e) => datosClientes(e, "apellidoMaterno")}
                 />
               </div>
               <div className="col-12 mt-3">
@@ -85,6 +116,7 @@ export const ModalCliente = () => {
                   label="Teléfono"
                   variant="outlined"
                   fullWidth
+                  onChange={(e) => datosClientes(e, "telefono")}
                 />
               </div>
               <div className="col-12 mt-3">
@@ -93,6 +125,7 @@ export const ModalCliente = () => {
                   label="E-mail"
                   variant="outlined"
                   fullWidth
+                  onChange={(e) => datosClientes(e, "email")}
                 />
               </div>
             </div>
@@ -100,7 +133,7 @@ export const ModalCliente = () => {
               <button
                 type="button"
                 className="btn btn-primary col-6 mx-2 rounded-3 btn-rosa"
-                onClick={handleOpen}
+                onClick={saveCliente}
               >
                 Guardar
               </button>

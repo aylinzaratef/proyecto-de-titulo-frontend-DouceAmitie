@@ -38,13 +38,10 @@ import Notes from "@mui/icons-material/Notes";
 import Close from "@mui/icons-material/Close";
 import CalendarToday from "@mui/icons-material/CalendarToday";
 import Create from "@mui/icons-material/Create";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
 import { ModalCliente } from "./ModalCliente";
 import { ProductService } from "../components/ProductService";
 import { blue, orange, green } from '@mui/material/colors';
@@ -195,7 +192,8 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       clienteID: 0,
       pastelID: 0,
       cantidadID: 0,
-      dataPasteles: []
+      dataPasteles: [],
+      listaclientes: clienteslist
     };
 
     this.getAppointmentData = () => {
@@ -233,17 +231,13 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       commitChanges({ [type]: { [appointment.id]: appointment } });
     } else {
 
-      var pasteles = [];
-      var pastel = {};
-      pastel.id = 1;
-      pastel.precio = 1000;
-      pastel.cantidad = 2;
-      pasteles.push(pastel);
+      this.state.dataPasteles.map(pastel => delete pastel.nombre);
+
       var saveData = {};
       // saveData.pasteles = pasteles;
       saveData.direccion_Entrega = appointment.location;
       saveData.observaciones_Pedido = appointment.observaciones_pedido;
-      saveData.estado = "En transito";
+      saveData.estado = "En Transito";
       const entrega = new Date(appointment.startDate);
       entrega.setHours(entrega.getHours() - 4);
       saveData.fecha_Entrega = entrega.toISOString();
@@ -253,7 +247,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       //TODO: AQUI HAY ATAO MI PANA
 
 
-      console.log("hola ", saveData);
+      console.log("soy el guardado ", saveData);
       let response = await fetch(
         "http://localhost:8080/Pedidos/ingresarPedido",
         {
@@ -271,7 +265,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       var newResponse = await response.text();
 
       appointment.title = saveData.datos_cliente;
-
+      appointment.priorityId = "En Transito";
       //FIN CREAR PEDIDO
       commitChanges({ [type]: appointment });
 
@@ -290,7 +284,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       target,
       onHide,
     } = this.props;
-    const { appointmentChanges, pastelList, clienteID, trabajadorID, pastelID, cantidadID, dataPasteles } = this.state;
+    const { appointmentChanges, pastelList, clienteID, trabajadorID, pastelID, cantidadID, dataPasteles, listaclientes } = this.state;
 
     const displayAppointmentData = {
       ...appointmentData,
@@ -424,8 +418,13 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     };
 
 
+    const pushToArrayList = (prop) => {
+      this.setState({ listaclientes: listaclientes.concat(prop) })
+    }
 
     return (
+
+
       <AppointmentForm.Overlay
         visible={visible}
         target={target}
@@ -496,7 +495,9 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                 <button className="btn btn-rosado mt-3" onClick={() => {
                   const pastel = pasteleslist.find(x => x.idPastel == pastelID)
                   this.setState({
-                    dataPasteles: this.state.dataPasteles.concat({ nombre: pastel.nombre || " ", cantidad: cantidadID, idPastel: pastelID, valor: pastel.valor || " " })
+                    dataPasteles: this.state.dataPasteles.concat({
+                      nombre: pastel.nombre || "", cantidad: cantidadID, id_Pastel: pastelID, valor: pastel.valor || " "
+                    })
                   })
                 }}>+</button>
               </div>
@@ -506,7 +507,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                     <tr>
                       <th className="text-center" scope="col">Nombre Pastel </th>
                       <th className="text-center" scope="col">Cantidad</th>
-                      <th className="text-center" scope="col">Precio</th>
+                      <th className="text-center" scope="col">Precio Unitario</th>
                       <th className="text-center" scope="col"></th>
                     </tr>
                   </thead>
@@ -557,15 +558,16 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                   label="Cliente"
                   onChange={userHandleChange}
                 >
-                  {Object.keys(clienteslist).map((key) => (
-                    <MenuItem key="clienteID" value={clienteslist[key].rut}>{clienteslist[key].nombre}</MenuItem>
+                  {Object.keys(listaclientes).map((key) => (
+                    <MenuItem key="clienteID" value={listaclientes[key].rut}>{listaclientes[key].nombre}</MenuItem>
                   ))}
 
 
 
                 </Select>
               </FormControl>
-              <ModalCliente />
+              <ModalCliente setList={pushToArrayList} />
+              {/*list={clienteslist} setList={this.setState.} */}
             </div>
             <div className={classes.wrapper}>
               <LocationOn className={classes.icon} color="disabled" />
@@ -647,8 +649,8 @@ export default class Calendar extends React.PureComponent {
       editingAppointment: undefined,
       previousAppointment: undefined,
       addedAppointment: {},
-      startDayHour: 9,
-      endDayHour: 19,
+      startDayHour: 10,
+      endDayHour: 22,
       isNewAppointment: false,
     };
 
@@ -805,11 +807,11 @@ export default class Calendar extends React.PureComponent {
           <ViewSwitcher />
 
           <AppointmentForm
+
             overlayComponent={this.appointmentForm}
             visible={editingFormVisible}
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
-          <DragDropProvider />
         </Scheduler>
         <StyledFab
           color="secondary"

@@ -34,7 +34,7 @@ export const BookTrabajador = () => {
   const productService = new ProductService();
 
   useEffect(() => {
-    productService.getProducts().then((data) => setProducts(data));
+    productService.getRecetas().then((data) => setProducts(data));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openNew = () => {
@@ -57,13 +57,13 @@ export const BookTrabajador = () => {
     return (
       <div className="text-center">
         <img
-          src={`images/product/${rowData.image}`}
+          src={`${rowData.imagen}`}
           onError={(e) =>
-            (e.target.src =
-              "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+          (e.target.src =
+            "https://www.elsoldemexico.com.mx/doble-via/virales/ey580c-cheems.jpg/alternates/LANDSCAPE_768/Cheems.jpg")
           }
-          alt={rowData.image}
-          className="product-image"
+          alt={rowData.imagen}
+          className="product-image imagen-tabla"
         />
       </div>
     );
@@ -153,28 +153,37 @@ export const BookTrabajador = () => {
           className="p-fluid"
           onHide={hideViewDialog}
         >
-          {product.image && (
-            <img
-              src={`images/product/${product.image}`}
-              onError={(e) =>
+          {product.imagen && (
+
+            <div className="text-center">
+              <img
+                src={`images/product/${product.imagen}`}
+                onError={(e) =>
                 (e.target.src =
-                  "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-              }
-              alt={product.image}
-              className="product-image block m-auto pb-3"
-            />
+                  product.imagen)
+                }
+                alt={product.imagen}
+                className="product-image block m-auto pb-3 imagen-vista"
+              />
+            </div>
+
+
           )}
           <div className="field">
-            <label htmlFor="name">Nombre</label>
+            <label htmlFor="name"><b>Nombre</b></label>
+            <p>{product.nombre}</p>
           </div>
           <div className="field mt-3">
-            <label htmlFor="description">Ingredientes</label>
+            <label htmlFor="description"><b>Ingredientes</b></label>
+            <p>{product.ingredientes}</p>
           </div>
           <div className="field mt-3">
-            <label htmlFor="description">Preparación</label>
+            <label htmlFor="description"><b>Preparación</b></label>
+            <p>{product.preparacion}</p>
           </div>
           <div className="field mt-3">
-            <label className="mb-3">Tipo</label>
+            <label className="mb-3"><b>Tipo </b></label>
+            <label className="mx-2">{product.categoria}</label>
           </div>
           <div className="container" align="center">
             <div className="field mt-3">

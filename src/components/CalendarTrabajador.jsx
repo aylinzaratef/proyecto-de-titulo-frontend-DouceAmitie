@@ -1,9 +1,12 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
+import { blue, orange, green } from '@mui/material/colors';
+import { styled } from '@mui/material/styles';
 import {
   Scheduler,
   Toolbar,
+  Resources,
   MonthView,
   WeekView,
   ViewSwitcher,
@@ -20,24 +23,68 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
+const StyledAppointmentTooltipHeader = styled(AppointmentTooltip.Header)(() => ({
+  [`&.${classes.firstRoom}`]: {
+    background: 'url(https://js.devexpress.com/Demos/DXHotels/Content/Pictures/Lobby-4.jpg)',
+  },
+  [`&.${classes.secondRoom}`]: {
+    background: 'url(https://js.devexpress.com/Demos/DXHotels/Content/Pictures/MeetingRoom-4.jpg)',
+  },
+  [`&.${classes.thirdRoom}`]: {
+    background: 'url(https://js.devexpress.com/Demos/DXHotels/Content/Pictures/MeetingRoom-0.jpg)',
+  },
+  [`&.${classes.header}`]: {
+    height: '260px',
+    backgroundSize: 'cover',
+  },
+}));
+const resources = [{
+  fieldName: 'priorityId',
+  title: 'Priority',
+  instances: [
+    { text: 'EN TRÁNSITO', id: "En Transito", color: blue },
+    { text: 'PREPARANDO', id: "Preparando", color: orange },
+    { text: 'COMPLETADO', id: "Completado", color: green }
+  ],
+}];
 
-import { appointments } from "./appointments";
+const Header = (({
+  children, appointmentData, ...restProps
+}) => (
+  <StyledAppointmentTooltipHeader
+    {...restProps}
+    className={classNames(getClassByLocation(classes, appointmentData.location), classes.header)}
+    appointmentData={appointmentData}
+  >
+    <StyledIconButton
+      /* eslint-disable-next-line no-alert */
+      onClick={() => alert(JSON.stringify(appointmentData))}
+      className={classes.commandButton}
+      size="large"
+    >
+      <MoreIcon />
+    </StyledIconButton>
+  </StyledAppointmentTooltipHeader>
+));
+
 
 export default class CalendarTrabajador extends React.PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
-      data: appointments,
+      data: props.data,
       confirmationVisible: false,
       editingFormVisible: false,
       deletedAppointmentId: undefined,
       editingAppointment: undefined,
       previousAppointment: undefined,
       addedAppointment: {},
-      startDayHour: 9,
-      endDayHour: 19,
+      startDayHour: 10,
+      endDayHour: 22,
       isNewAppointment: false,
     };
+
 
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
     this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this);
@@ -106,6 +153,10 @@ export default class CalendarTrabajador extends React.PureComponent {
           <MonthView displayName="MES" />
           <EditRecurrenceMenu />
           <Appointments />
+          <Resources
+            data={resources}
+            mainResourceName="priorityId"
+          />
           <AppointmentTooltip showCloseButton showDeleteButton />
           <Toolbar />
           <DateNavigator />

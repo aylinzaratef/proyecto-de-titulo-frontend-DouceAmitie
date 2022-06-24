@@ -80,7 +80,7 @@ export const MenuBar = () => {
     ];
     color = "bg-rosa c-blanco";
     logout = "c-blanco"
-    perfil = "Trabajador";
+    perfil = "Pastelero";
   }
 
   const start = <h4 className="font-pastel pt-3">D.A.</h4>;

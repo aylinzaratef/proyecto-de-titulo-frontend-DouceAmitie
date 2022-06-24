@@ -25,20 +25,20 @@ export const Carrusel = () => {
   const productService = new ProductService();
 
   useEffect(() => {
-    productService.getProducts().then((data) => setProducts(data.slice(0, 9)));
+    productService.getRecetas().then((data) => setProducts(data.slice(0, 9)));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const productTemplate = (product) => {
     return (
       <div className="p-3 text-center">
         <img
-          src={`images/tortuga.jpge`}
+          src={`${product.imagen}`}
           onError={(e) =>
-            (e.target.src =
-              "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+          (e.target.src =
+            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
           }
           alt={product.name}
-          className="product-image"
+          className="product-image imagen-carrusel"
         />
       </div>
     );
@@ -48,7 +48,7 @@ export const Carrusel = () => {
     <div className="carousel-demo">
       <Carousel
         value={products}
-        numVisible={1}
+        numVisible={3}
         numScroll={1}
         responsiveOptions={responsiveOptions}
         className="custom-carousel"

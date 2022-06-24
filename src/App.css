@@ -286,6 +286,11 @@ a:hover {
     border-radius: 30%;
 }
 
+.imagen-carrusel {
+    width: 300px;
+    height: 300px;
+}
+
 .imagen-vista {
     width: 30%;
 
