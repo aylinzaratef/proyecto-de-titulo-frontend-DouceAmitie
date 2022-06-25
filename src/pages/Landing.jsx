@@ -107,7 +107,7 @@ export const Landing = () => {
       </section>
 
       <section className="page-section  portfolio" id="portfolio">
-        <h2 className="page-section-heading text-center text-uppercase c-chocolate my-4">
+        <h2 className="page-section-heading text-center text-uppercase c-chocolate">
           Destacados
         </h2>
         <div className="divider-custom c-chocolate">

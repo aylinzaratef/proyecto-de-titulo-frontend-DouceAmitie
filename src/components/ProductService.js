@@ -177,4 +177,24 @@ export class ProductService {
         return pasteles; //RETORNA EN VISTA
 
     }
+
+
+
+    getLogin = async (rut, password) => {
+        let data = await fetch('http://localhost:8080/Login/login', { //OBTIENE INFORMACION DESDE BACK 
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Request-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "origin-list"
+            },
+            body: JSON.stringify({ rut: rut, password: password })
+
+        }).then(data => { //ASIGNA VALORES QUE ESTAN EN EL PARENTESIS CON DATA CURSIVA
+            return data.json(); // TRANSFORMA LOS DATOS DEL BACK EN JSON Y ASIGNA A DATA CURSIVA UWU 
+        });
+        return data; //RETORNA EN VISTA
+
+    }
 }

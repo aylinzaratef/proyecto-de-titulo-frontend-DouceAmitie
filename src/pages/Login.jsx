@@ -1,18 +1,39 @@
 import { authContext } from "../context/contextUser";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ProductService } from "../components/ProductService";
 
+const productService = new ProductService();
 export const Login = () => {
   const { currentUser, setCurrentUser } = useContext(authContext);
   const navigate = useNavigate();
-  const login = () => {
-    if (currentUser.perfil == "admin") {
-      navigate("/home");
-    } else {
-      navigate("/calendar");
-    }
-  };
+  const login = async () => {
+    const p = Promise.resolve(productService.getLogin(currentUser.rut, currentUser.password));
+    try {
+      var datos = await p;
+      if (datos) {
+        let _user = { ...currentUser };
+        _user["perfil"] = datos.permisos == 1 ? "admin" : "trabajador";
+        setCurrentUser(_user);
+        if (currentUser.perfil == "admin") {
+          navigate("/home");
+        } else {
+          navigate("/calendar");
+        }
+      }
 
+    } catch (err) {
+      console.log(err)
+    }
+
+  }
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || "";
+    let _user = { ...currentUser };
+    _user[`${name}`] = val;
+
+    setCurrentUser(_user);
+  };
   return (
     <div className="background-login">
       <div className="container py-5">
@@ -33,14 +54,15 @@ export const Login = () => {
                   <p className="c-cholate mb-5">
                     Ingrese sus credenciales de trabajador
                   </p>
-                  <label className="form-label" htmlFor="typeEmailX">
+                  <label className="form-label" htmlFor="rut">
                     Rut
                   </label>
                   <div className="form-outline form-white mb-4">
                     <input
-                      type="email"
-                      id="typeEmailX"
+                      type="text"
+                      id="rut"
                       className="form-control form-control-lg"
+                      onChange={(e) => onInputChange(e, "rut")}
                     />
                   </div>
                   <label className="form-label" htmlFor="typePasswordX">
@@ -51,6 +73,7 @@ export const Login = () => {
                       type="password"
                       id="typePasswordX"
                       className="form-control form-control-lg"
+                      onChange={(e) => onInputChange(e, "password")}
                     />
                   </div>
                   <button
