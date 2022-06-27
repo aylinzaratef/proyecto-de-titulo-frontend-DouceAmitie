@@ -6,7 +6,7 @@ import { authContext } from "../context/contextUser";
 import { ProductService } from "../components/ProductService";
 
 const productService = new ProductService();
-const p = Promise.resolve(productService.getPedidos());
+const p = Promise.resolve(productService.getPedidosTrabajador());
 var appointments = [];
 try {
   appointments = await p;

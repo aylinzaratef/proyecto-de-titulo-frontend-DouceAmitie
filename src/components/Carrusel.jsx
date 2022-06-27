@@ -35,7 +35,7 @@ export const Carrusel = () => {
           src={`${product.imagen}`}
           onError={(e) =>
           (e.target.src =
-            "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+            '/public/images/errorfoto.png')
           }
           alt={product.name}
           className="product-image imagen-carrusel"

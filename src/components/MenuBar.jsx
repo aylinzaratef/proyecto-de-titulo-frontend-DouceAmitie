@@ -12,6 +12,8 @@ export const MenuBar = () => {
   var color = "";
   var perfil = "";
   var logout = "";
+  window.sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
+  console.log("soy el del menubar", currentUser);
   if (currentUser.perfil == "admin") {
     items = [
       {
@@ -89,10 +91,10 @@ export const MenuBar = () => {
     <div className="container-menu">
       <nav className={"navbar navbar-light " + color}>
         <div className="container-fluid px-5">
-          <span className="">Bienvenid@, Juanita Pérez</span>
+          <span className="">Bienvenid@, {currentUser.nombre}</span>
           <div className="d-flex">
             <span className="mx-3"> {perfil}</span>
-            <a href="/" className={logout}><i className="pi pi-sign-out mt-1"></i></a>
+            <a onClick={() => { window.sessionStorage.removeItem("currentUser"); window.location.href = "/" }} className={logout}><i className="pi pi-sign-out mt-1"></i></a>
           </div>
         </div>
       </nav>

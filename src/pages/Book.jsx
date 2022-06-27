@@ -218,8 +218,8 @@ export const Book = () => {
         <img
           src={`${rowData.imagen}`}
           onError={(e) =>
-          (e.target.src =
-            "https://www.elsoldemexico.com.mx/doble-via/virales/ey580c-cheems.jpg/alternates/LANDSCAPE_768/Cheems.jpg")
+          (e.target.src = '/public/images/errorfoto.png'
+          )
           }
           alt={rowData.imagen}
           className="product-image imagen-tabla"
@@ -714,10 +714,10 @@ export const Book = () => {
 
             <div className="text-center">
               <img
-                src={`images/product/${product.imagen}`}
+                src={`${product.imagen}`}
                 onError={(e) =>
                 (e.target.src =
-                  product.imagen)
+                  '/public/images/errorfoto.png')
                 }
                 alt={product.imagen}
                 className="product-image block m-auto pb-3 imagen-vista"

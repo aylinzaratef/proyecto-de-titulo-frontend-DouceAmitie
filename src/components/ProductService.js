@@ -76,7 +76,7 @@ export class ProductService {
                 + data[key].datos_encargado + ", Valor Total: " + data[key].valor_total;
             newData.priorityId = data[key].estado;
             newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
-
+            console.log(data);
             pedidos.push(newData);
 
 
@@ -195,6 +195,47 @@ export class ProductService {
             return data.json(); // TRANSFORMA LOS DATOS DEL BACK EN JSON Y ASIGNA A DATA CURSIVA UWU 
         });
         return data; //RETORNA EN VISTA
+
+    }
+
+
+
+    getPedidosTrabajador = async () => {
+        var pedidos = []; //OBJETO
+        let data = await fetch('http://localhost:8080/Pedidos/getPedidos', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Request-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "origin-list"
+            }
+        }).then(data => {
+            return data.json();
+        });
+        Object.keys(data).forEach(function (key) {
+            let newData = data[key];
+            newData.startDate = data[key].fecha_Entrega;
+            let endDate = data[key].fecha_Entrega.split("T");
+            let fecha = endDate[0] + "T";
+            let horas = endDate[1].split(":");
+            let hora = parseInt(horas[0]) + 1 //AQUI SE SUMAN LAS HORAS PARA HACER MAS GRANDE EL CUADRADITO
+            newData.endDate = fecha + hora + ":" + horas[1] + ":" + horas[2];
+            let nombrePastel = "";
+            data[key].nombresPasteles.forEach(pastel => {
+                nombrePastel = nombrePastel + pastel + ", ";
+            })
+            newData.title = "Pedido Nro: " + data[key].id_Pedido + ", Productos: " + nombrePastel
+            newData.priorityId = data[key].estado;
+            newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
+
+            pedidos.push(newData);
+
+
+        });
+
+
+        return pedidos;
 
     }
 }

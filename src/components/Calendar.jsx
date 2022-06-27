@@ -87,7 +87,7 @@ const resources = [{
   fieldName: 'priorityId',
   title: 'Priority',
   instances: [
-    { text: 'EN TRÁNSITO', id: "En Transito", color: blue },
+    { text: 'NUEVO PEDIDO', id: "En Transito", color: blue },
     { text: 'PREPARANDO', id: "Preparando", color: orange },
     { text: 'COMPLETADO', id: "Completado", color: green }
   ],

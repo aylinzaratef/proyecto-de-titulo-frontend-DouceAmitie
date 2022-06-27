@@ -60,7 +60,7 @@ export const BookTrabajador = () => {
           src={`${rowData.imagen}`}
           onError={(e) =>
           (e.target.src =
-            "https://www.elsoldemexico.com.mx/doble-via/virales/ey580c-cheems.jpg/alternates/LANDSCAPE_768/Cheems.jpg")
+            '/public/images/errorfoto.png')
           }
           alt={rowData.imagen}
           className="product-image imagen-tabla"
@@ -160,7 +160,7 @@ export const BookTrabajador = () => {
                 src={`images/product/${product.imagen}`}
                 onError={(e) =>
                 (e.target.src =
-                  product.imagen)
+                  '/public/images/errorfoto.png')
                 }
                 alt={product.imagen}
                 className="product-image block m-auto pb-3 imagen-vista"

@@ -2,6 +2,7 @@ import { authContext } from "../context/contextUser";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductService } from "../components/ProductService";
+import { DateRangeSharp } from "@mui/icons-material";
 
 const productService = new ProductService();
 export const Login = () => {
@@ -14,12 +15,18 @@ export const Login = () => {
       if (datos) {
         let _user = { ...currentUser };
         _user["perfil"] = datos.permisos == 1 ? "admin" : "trabajador";
+        _user["nombre"] = datos.nombre + " " + datos.apellidoPaterno + " " + datos.apellidoMaterno;
+        console.log(datos);
         setCurrentUser(_user);
-        if (currentUser.perfil == "admin") {
-          navigate("/home");
-        } else {
-          navigate("/calendar");
+        if (currentUser) {
+          window.sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
+          if (datos.permisos == 1) {
+            navigate("/home");
+          } else {
+            navigate("/calendar");
+          }
         }
+
       }
 
     } catch (err) {
