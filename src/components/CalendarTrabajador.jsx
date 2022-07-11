@@ -110,11 +110,12 @@ export default class CalendarTrabajador extends React.PureComponent {
   Header = (({
     children, appointmentData, ...restProps
   }) => (
-    <StyledAppointmentTooltipHeader
+    <><StyledAppointmentTooltipHeader
       {...restProps}
       className={classNames(getClassByLocation(classes, appointmentData.location), classes.header)}
       appointmentData={appointmentData}
     >
+      <h6 className=" pedido-trabajador mt-3">Pedido Número:  <b>{appointmentData.id_Pedido}</b></h6>
       <StyledIconButton
         /* eslint-disable-next-line no-alert */
         onClick={() => this.commitChanges({ changed: true }, appointmentData, "Preparando")}
@@ -132,6 +133,9 @@ export default class CalendarTrabajador extends React.PureComponent {
         <CheckIcon />
       </StyledIconButton>
     </StyledAppointmentTooltipHeader>
+
+    </>
+
   ));
   setDeletedAppointmentId(id) {
     this.setState({ deletedAppointmentId: id });

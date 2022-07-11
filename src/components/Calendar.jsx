@@ -4,6 +4,7 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
+import ReactTooltip from "react-tooltip";
 import {
   Scheduler,
   Resources,
@@ -20,6 +21,7 @@ import {
   TodayButton,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import { connectProps } from "@devexpress/dx-react-core";
+import classNames from 'clsx';
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterMoment from "@mui/lab/AdapterMoment";
@@ -45,7 +47,10 @@ import Select from "@mui/material/Select";
 import { ModalCliente } from "./ModalCliente";
 import { ProductService } from "../components/ProductService";
 import { blue, orange, green } from '@mui/material/colors';
-
+import CheckIcon from '@mui/icons-material/Check';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 const productService = new ProductService();
 
 const p = Promise.resolve(productService.getPedidos());
@@ -91,6 +96,7 @@ const resources = [{
     { text: 'PREPARANDO', id: "Preparando", color: orange },
     { text: 'COMPLETADO', id: "Completado", color: green }
   ],
+
 }];
 
 
@@ -206,7 +212,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     });
   }
 
-  async commitAppointment(type) {
+  async commitAppointment(type, editAppointment = {}) {
     const { commitChanges } = this.props;
     const appointment = {
       ...this.getAppointmentData(),
@@ -215,7 +221,55 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     if (type === "deleted") {
       commitChanges({ [type]: appointment.id });
     } else if (type === "changed") {
-      commitChanges({ [type]: { [appointment.id]: appointment } });
+      appointment.pasteles.map(pastel => delete pastel.id_Pedido_Pastel);
+      appointment.pasteles.map(pastel => delete pastel.pedido);
+      console.log("eliminando id pedido pastel ", appointment);
+      let actualizarData = {}
+      if (appointment.location) {
+        actualizarData.direccion_Entrega = appointment.location;
+      } else {
+        actualizarData.direccion_Entrega = appointment.direccion_Entrega;
+      }
+
+      actualizarData.id_Pedido = appointment.id_Pedido;
+      if (appointment.observaciones_pedido) {
+        actualizarData.observaciones_Pedido = appointment.observaciones_pedido;
+      } else {
+        actualizarData.observaciones_Pedido = appointment.observaciones_Pedido;
+      }
+
+      actualizarData.estado = appointment.priorityId;
+      actualizarData.fecha_Entrega = appointment.fecha_Entrega;
+      actualizarData.datos_cliente = appointment.datos_cliente.split(",")[0];
+      if (appointment.trabajador) {
+        actualizarData.datos_encargado = appointment.trabajador;
+      } else {
+        actualizarData.datos_encargado = appointment.datos_encargado.split(",")[0];
+      }
+
+      actualizarData.pasteles = appointment.pasteles;
+      actualizarData.nombresPasteles = appointment.nombresPasteles;
+      actualizarData.valor_total = appointment.valor_total;
+      console.log(actualizarData);
+
+      let response = await fetch(
+        "http://localhost:8080/Pedidos/actualizarPedido",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Request-With": "XMLHttpRequest",
+            "Access-Control-Allow-Origin": "origin-list",
+          },
+          body: JSON.stringify(actualizarData),
+        }
+
+      );
+      var newResponse = await response.text();
+      if (newResponse) {
+        location.reload();
+      }
     } else {
 
       this.state.dataPasteles.map(pastel => delete pastel.nombre);
@@ -231,10 +285,10 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       saveData.datos_cliente = appointment.cliente;
       saveData.datos_encargado = appointment.trabajador;
       saveData.pasteles = this.state.dataPasteles;
-      //TODO: AQUI HAY ATAO MI PANA
+
+      console.log("soy el nuevo pedido", saveData);
 
 
-      console.log("soy el guardado ", saveData);
       let response = await fetch(
         "http://localhost:8080/Pedidos/ingresarPedido",
         {
@@ -255,6 +309,9 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       appointment.priorityId = "En Transito";
       //FIN CREAR PEDIDO
       commitChanges({ [type]: appointment });
+      if (newResponse) {
+        location.reload();
+      }
 
     }
     this.setState({
@@ -278,7 +335,8 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       ...appointmentChanges,
     };
 
-    const isNewAppointment = appointmentData.id === undefined;
+    const isNewAppointment = appointmentData.id_Pedido === undefined;
+    console.log("soy el 289", appointmentData)
     const applyChanges = isNewAppointment
       ? () => this.commitAppointment("added")
       : () => this.commitAppointment("changed");
@@ -429,99 +487,98 @@ class AppointmentFormContainerBasic extends React.PureComponent {
             </IconButton>
           </div>
           <div className={classes.content}>
-            <div className="row">
-              <div className="col-6">
-                <div className={classes.wrapper}>
-                  <Create className={classes.icon} color="action" />
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label-pastel">Pasteles</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label-pastel"
-                      id="demo-simple-select-pastel"
-                      value={pastelID}
-                      label="Cliente"
-                      onChange={userHandleChangePastel}
-                    >
-                      {Object.keys(pasteleslist).map((key) => (
+            {isNewAppointment && (
 
-                        <MenuItem key={key} value={pasteleslist[key].idPastel}>{pasteleslist[key].nombre}</MenuItem>
-                      ))}
+              <div className="row">
+                <div className="col-6">
+                  <div className={classes.wrapper}>
+                    <Create className={classes.icon} color="action" />
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label-pastel">Pasteles</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label-pastel"
+                        id="demo-simple-select-pastel"
+                        value={pastelID}
+                        label="Cliente"
+                        onChange={userHandleChangePastel}
+                      >
+                        {Object.keys(pasteleslist).map((key) => (
 
-                    </Select>
-                  </FormControl>
+                          <MenuItem key={key} value={pasteleslist[key].idPastel}>{pasteleslist[key].nombre}</MenuItem>
+                        ))}
+
+                      </Select>
+                    </FormControl>
+                  </div>
                 </div>
-              </div>
-              <div className="col-4">
-                <div className={classes.wrapper}>
+                <div className="col-2">
+                  <div className={classes.wrapper}>
 
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label-cantidad">Cantidad</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label-cantidad"
-                      id="demo-simple-select-cantidad"
-                      value={cantidadID}
-                      label="Cliente"
-                      onChange={userHandleChangeCantidad}
-                    >
-                      <MenuItem value={1}>1</MenuItem>
-                      <MenuItem value={2}>2</MenuItem>
-                      <MenuItem value={3}>3</MenuItem>
-                      <MenuItem value={4}>4</MenuItem>
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={6}>6</MenuItem>
-                      <MenuItem value={7}>7</MenuItem>
-                      <MenuItem value={8}>8</MenuItem>
-                      <MenuItem value={9}>9</MenuItem>
-                      <MenuItem value={10}>10</MenuItem>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label-cantidad">Cantidad</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label-cantidad"
+                        id="demo-simple-select-cantidad"
+                        value={cantidadID}
+                        label="Cliente"
+                        onChange={userHandleChangeCantidad}
+                      >
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                        <MenuItem value={4}>4</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={6}>6</MenuItem>
+                        <MenuItem value={7}>7</MenuItem>
+                        <MenuItem value={8}>8</MenuItem>
+                        <MenuItem value={9}>9</MenuItem>
+                        <MenuItem value={10}>10</MenuItem>
 
-                    </Select>
-                  </FormControl>
+                      </Select>
+                    </FormControl>
+                  </div>
                 </div>
-              </div>
-              <div className="col-2">
-                <button className="btn btn-rosado mt-3" onClick={() => {
-                  const pastel = pasteleslist.find(x => x.idPastel == pastelID)
-                  this.setState({
-                    dataPasteles: this.state.dataPasteles.concat({
-                      nombre: pastel.nombre || "", cantidad: cantidadID, id_Pastel: pastelID, valor: pastel.valor || " "
+                <div className="col-4 mt-3">
+                  <button className="btn btn-rosado" onClick={() => {
+                    const pastel = pasteleslist.find(x => x.idPastel == pastelID)
+                    this.setState({
+                      dataPasteles: this.state.dataPasteles.concat({
+                        nombre: pastel.nombre || "", cantidad: cantidadID, id_Pastel: pastelID, valor: pastel.valor || " "
+                      })
                     })
-                  })
-                }}>+</button>
+                  }}>Agregar producto</button>
+                </div>
+                <div className="col-12 my-3">
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th className="text-center" scope="col">Nombre Pastel </th>
+                        <th className="text-center" scope="col">Cantidad</th>
+                        <th className="text-center" scope="col">Precio Unitario</th>
+                        <th className="text-center" scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="listaPasteles">
+                      {Object.keys(this.state.dataPasteles).map((key) => {
+                        return (
+                          <tr key={key}>
+                            <td className="text-center">{this.state.dataPasteles[key].nombre}</td>
+                            <td className="text-center">{this.state.dataPasteles[key].cantidad}</td>
+                            <td className="text-center">{new Intl.NumberFormat('es-CL', { currency: 'CLP', style: 'currency' }).format(this.state.dataPasteles[key].valor)}</td>
+                            <td className="text-center"><button className="btn btn-rosado" onClick={() =>
+                              this.setState({
+                                dataPasteles: dataPasteles.filter(x => x != dataPasteles[key])
+                              })
+                            }>Eliminar</button></td>
+                          </tr>
+                        )
+                      })}
+
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div className="col-12 my-3">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th className="text-center" scope="col">Nombre Pastel </th>
-                      <th className="text-center" scope="col">Cantidad</th>
-                      <th className="text-center" scope="col">Precio Unitario</th>
-                      <th className="text-center" scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="listaPasteles">
-                    {Object.keys(this.state.dataPasteles).map((key) => {
-                      return (
-                        <tr key={key}>
-                          <td className="text-center">{this.state.dataPasteles[key].nombre}</td>
-                          <td className="text-center">{this.state.dataPasteles[key].cantidad}</td>
-                          <td className="text-center">{new Intl.NumberFormat('es-CL', { currency: 'CLP', style: 'currency' }).format(this.state.dataPasteles[key].valor)}</td>
-                          <td className="text-center"><button className="btn btn-rosado" onClick={() =>
-                            this.setState({
-                              dataPasteles: dataPasteles.filter(x => x != dataPasteles[key])
-                            })
-                          }>Eliminar</button></td>
-                        </tr>
-                      )
-                    })}
-
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-
-
-
+            )}
             <div className={classes.wrapper}>
               <CalendarToday className={classes.icon} color="action" />
               <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -534,28 +591,31 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                 />
               </LocalizationProvider>
             </div>
-            <div className={classes.wrapper}>
-              <Create className={classes.icon} color="action" />
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={clienteID}
-                  label="Cliente"
-                  onChange={userHandleChange}
-                >
-                  {Object.keys(listaclientes).map((key) => (
-                    <MenuItem key="clienteID" value={listaclientes[key].rut}>{listaclientes[key].nombre}</MenuItem>
-                  ))}
+
+            {isNewAppointment && (
+              <div className={classes.wrapper}>
+                <Create className={classes.icon} color="action" />
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={clienteID}
+                    label="Cliente"
+                    onChange={userHandleChange}
+                  >
+                    {Object.keys(listaclientes).map((key) => (
+                      <MenuItem key="clienteID" value={listaclientes[key].rut}>{listaclientes[key].nombre}</MenuItem>
+                    ))}
 
 
 
-                </Select>
-              </FormControl>
-              <ModalCliente setList={pushToArrayList} />
-              {/*list={clienteslist} setList={this.setState.} */}
-            </div>
+                  </Select>
+                </FormControl>
+                <ModalCliente setList={pushToArrayList} />
+                {/*list={clienteslist} setList={this.setState.} */}
+              </div>
+            )}
             <div className={classes.wrapper}>
               <LocationOn className={classes.icon} color="disabled" />
               <TextField {...textEditorProps("location")} label={"Ubicación"} />
@@ -567,23 +627,25 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                 multiline
                 rows="6"
                 label={"Observaciones pedido"}
+
               />
             </div>
 
             <div className={classes.wrapper}>
               <Create className={classes.icon} color="action" />
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label-trabajador">Trabajador</InputLabel>
+                <InputLabel id="demo-simple-select-label-trabajador">Seleccione trabajador al cual desea asignar pedido</InputLabel>
                 <Select
                   labelId="demo-simple-select-label-trabajador"
                   id="demo-simple-select-trabajador"
                   value={trabajadorID}
                   label="Cliente"
                   onChange={userHandleChangeTrabajador}
+
                 >
                   {Object.keys(trabajadorlist).map((key) => (
 
-                    <MenuItem key="trabajadorID" value={trabajadorlist[key].rut}>{trabajadorlist[key].nombre}</MenuItem>
+                    <MenuItem key="trabajadorID" selected={trabajadorlist[key].rut == appointmentData.rutTrabajador ? "selected" : ""} value={trabajadorlist[key].rut}>{trabajadorlist[key].nombre}</MenuItem>
 
                   ))}
 
@@ -594,19 +656,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 
           </div>
           <div className={classes.buttonGroup}>
-            {!isNewAppointment && (
-              <Button
-                variant="outlined"
-                color="secondary"
-                className={classes.button + " mx-2"}
-                onClick={() => {
-                  visibleChange();
-                  this.commitAppointment("deleted");
-                }}
-              >
-                Eliminar
-              </Button>
-            )}
+
             <button
               type="button"
               className="btn btn-primary btn-rosa"
@@ -615,7 +665,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                 applyChanges();
               }}
             >
-              {isNewAppointment ? "+ Ingresar Pedido" : "Guardar"}
+              {isNewAppointment ? "+ Ingresar Pedido" : "Actualizar Pedido"}
             </button>
           </div>
         </StyledDiv>
@@ -624,6 +674,32 @@ class AppointmentFormContainerBasic extends React.PureComponent {
   }
 }
 
+const getClassByLocation = (location) => {
+  if (location === 'Room 1') return classes.firstRoom;
+  if (location === 'Room 2') return classes.secondRoom;
+  return classes.thirdRoom;
+};
+
+const StyledAppointmentTooltipHeader = styled(AppointmentTooltip.Header)(() => ({
+  [`&.${classes.firstRoom}`]: {
+
+  },
+  [`&.${classes.secondRoom}`]: {
+
+  },
+  [`&.${classes.thirdRoom}`]: {
+
+  },
+  [`&.${classes.header}`]: {
+    height: '60px',
+  },
+}));
+
+const StyledIconButton = styled(IconButton)(() => ({
+  [`&.${classes.commandButton}`]: {
+    backgroundColor: 'rgba(255,255,255,0.65)',
+  },
+}));
 /* eslint-disable-next-line react/no-multi-comp */
 export default class Calendar extends React.PureComponent {
   constructor(props) {
@@ -631,6 +707,7 @@ export default class Calendar extends React.PureComponent {
     this.state = {
       data: appointments,
       confirmationVisible: false,
+      confirmationVisibleEliminar: false,
       editingFormVisible: false,
       deletedAppointmentId: undefined,
       editingAppointment: undefined,
@@ -639,9 +716,11 @@ export default class Calendar extends React.PureComponent {
       startDayHour: 10,
       endDayHour: 22,
       isNewAppointment: false,
+      finalizarData: {}
     };
 
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
+    this.toggleConfirmationVisibleEliminar = this.toggleConfirmationVisibleEliminar.bind(this);
     this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this);
     this.toggleEditingFormVisibility =
       this.toggleEditingFormVisibility.bind(this);
@@ -663,7 +742,7 @@ export default class Calendar extends React.PureComponent {
       const currentAppointment =
         data.filter(
           (appointment) =>
-            editingAppointment && appointment.id === editingAppointment.id
+            editingAppointment && appointment.id_Pedido === editingAppointment.id_Pedido
         )[0] || addedAppointment;
       const cancelAppointment = () => {
         if (isNewAppointment) {
@@ -684,15 +763,89 @@ export default class Calendar extends React.PureComponent {
       };
     });
   }
+  setFinalizarData(saveData) {
+    this.setState({ finalizarData: saveData })
+  }
+  Header = (({
+    children, appointmentData, ...restProps
+  }) => (
+    <> <StyledAppointmentTooltipHeader
+      {...restProps}
+      className={classNames(getClassByLocation(classes, appointmentData.location), classes.header)}
+      appointmentData={appointmentData}
+    >
+      <h4 className="mt-2 valor-total">${appointmentData.valor_total}</h4>
+      <StyledIconButton
+        /* eslint-disable-next-line no-alert */
+        onClick={() => this.commitChanges({ changed: true }, appointmentData, "Preparando")}
+        className={classes.commandButton}
+        size="large"
+        data-tip data-for="PrepararTooltip"
+      >
+        <LocalDiningIcon />
+        <ReactTooltip id="PrepararTooltip" place="top" type="dark" effect="solid">
+          Comenzar a Preparar
+        </ReactTooltip>
+      </StyledIconButton>
+      <StyledIconButton
+        /* eslint-disable-next-line no-alert */
+        onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisible() }}
+        className={classes.commandButton}
+        size="large"
+        data-tip data-for="CompletarTooltip"
+      >
+        <CheckIcon />
+        <ReactTooltip id="CompletarTooltip" place="top" type="dark" effect="solid">
+          Completar Pedido
+        </ReactTooltip>
+      </StyledIconButton>
+      <StyledIconButton
+        onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisibleEliminar() }}
+        className={classes.commandButton}
+        size="large"
+        data-tip data-for="EliminarTooltip"
+      >
+        <DeleteIcon />
+        <ReactTooltip id="EliminarTooltip" place="top" type="dark" effect="solid">
+          Eliminar Pedido
+        </ReactTooltip>
+      </StyledIconButton>
+      <StyledIconButton
+        onClick={() => { this.toggleEditingFormVisibility(appointmentData) }}
+        className={classes.commandButton}
+        size="large"
+        data-tip data-for="EditarTooltip"
+      >
+        <EditIcon />
+        <ReactTooltip id="EditarTooltip" place="top" type="dark" effect="solid">
+          Editar Pedido
+        </ReactTooltip>
+      </StyledIconButton>
+    </StyledAppointmentTooltipHeader>
+      <h5 className=" datos-encabezado">Pedido Número:  <b>{appointmentData.id_Pedido}</b></h5>
+      <h5 className=" datos-encabezado">Encargado: <b>{appointmentData.datos_encargado.split(",")[1]}</b></h5>
+      <h5 className=" datos-encabezado"><u>Datos Cliente </u></h5>
+      <h5 className=" datos-encabezado">Rut: <b>{appointmentData.datos_cliente.split(",")[0]}</b></h5>
+      <h5 className=" datos-encabezado">Nombre: <b>{appointmentData.datos_cliente.split(",")[1]}</b></h5>
+      <h5 className=" datos-encabezado">Correo: <b>{appointmentData.datos_cliente.split(",")[2]}</b></h5>
+      <h5 className=" datos-encabezado">Teléfono: <b>{appointmentData.datos_cliente.split(",")[3]}</b></h5>
+      <h5 className=" datos-encabezado"><i className="pi pi-map-marker" ></i><b>{appointmentData.direccion_Entrega}</b></h5>
+      <h5 className=" datos-encabezado"><i className="pi pi-bookmark"></i>  <b>{appointmentData.observaciones_Pedido}</b></h5>
+    </>
 
+
+  ));
   componentDidUpdate() {
     this.appointmentForm.update();
   }
 
   onEditingAppointmentChange(editingAppointment) {
-    this.setState({ editingAppointment });
+    this.setState({ editingAppointment, isNewAppointment: false });
   }
-
+  toggleConfirmationVisible() {
+    const { confirmationVisible } = this.state;
+    this.setState({ confirmationVisible: !confirmationVisible });
+  }
   onAddedAppointmentChange(addedAppointment) {
     this.setState({ addedAppointment });
     const { editingAppointment } = this.state;
@@ -708,16 +861,15 @@ export default class Calendar extends React.PureComponent {
     this.setState({ deletedAppointmentId: id });
   }
 
-  toggleEditingFormVisibility() {
+  toggleEditingFormVisibility(appointment) {
     const { editingFormVisible } = this.state;
     this.setState({
-      editingFormVisible: !editingFormVisible,
+      editingAppointment: appointment, editingFormVisible: !editingFormVisible, isNewAppointment: false
     });
   }
-
-  toggleConfirmationVisible() {
-    const { confirmationVisible } = this.state;
-    this.setState({ confirmationVisible: !confirmationVisible });
+  toggleConfirmationVisibleEliminar() {
+    const { confirmationVisibleEliminar } = this.state;
+    this.setState({ confirmationVisibleEliminar: !confirmationVisibleEliminar });
   }
 
   commitDeletedAppointment() {
@@ -729,10 +881,10 @@ export default class Calendar extends React.PureComponent {
 
       return { data: nextData, deletedAppointmentId: null };
     });
-    this.toggleConfirmationVisible();
+    this.toggleConfirmationVisibleEliminar();
   }
 
-  commitChanges({ added, changed, deleted }) {
+  commitChanges({ added, changed, deleted }, saveData = {}, estado = "") {
     this.setState((state) => {
       let { data } = state;
       if (added) {
@@ -741,15 +893,73 @@ export default class Calendar extends React.PureComponent {
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
+        console.log("soy el guardado ", saveData);
+        saveData.priorityId = estado
+        let actualizarData = {}
+        actualizarData.direccion_Entrega = saveData.direccion_Entrega;
+        actualizarData.id_Pedido = saveData.id_Pedido;
+        actualizarData.observaciones_Pedido = saveData.observaciones_Pedido;
+        actualizarData.estado = estado;
+        actualizarData.fecha_Entrega = saveData.fecha_Entrega;
+        actualizarData.datos_cliente = saveData.datos_cliente.split(",")[0];
+        actualizarData.datos_encargado = saveData.datos_encargado.split(",")[0];
+        actualizarData.pasteles = saveData.pasteles;
+        actualizarData.nombresPasteles = saveData.nombresPasteles;
+        actualizarData.valor_total = saveData.valor_total;
+
+        fetch(
+          "http://localhost:8080/Pedidos/actualizarPedido",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            },
+            body: JSON.stringify(actualizarData),
+          }
+
+        );
+
         data = data.map((appointment) =>
           changed[appointment.id]
             ? { ...appointment, ...changed[appointment.id] }
             : appointment
         );
+
+        if (estado == "Completado") {
+          this.toggleConfirmationVisible()
+        }
       }
-      if (deleted !== undefined) {
-        this.setDeletedAppointmentId(deleted);
-        this.toggleConfirmationVisible();
+      if (deleted) {
+        console.log("me eliminaron :(");
+        fetch(
+          "http://localhost:8080/Pedidos/eliminarPedido/" + saveData.id_Pedido,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            }
+
+          }
+
+        );
+        this.setState((state) => {
+          const { data } = state;
+          console.log("data ", data)
+          const nextData = data.filter(
+            (appointment) => appointment.id_Pedido !== saveData.id_Pedido
+          );
+
+          return { data: nextData, deletedAppointmentId: null };
+        });
+        this.setDeletedAppointmentId(saveData.id_Pedido); ///
+        this.toggleConfirmationVisibleEliminar();
+
       }
       return { data, addedAppointment: {} };
     });
@@ -760,9 +970,11 @@ export default class Calendar extends React.PureComponent {
       currentDate,
       data,
       confirmationVisible,
+      confirmationVisibleEliminar,
       editingFormVisible,
       startDayHour,
       endDayHour,
+      finalizarData
     } = this.state;
 
     return (
@@ -785,8 +997,9 @@ export default class Calendar extends React.PureComponent {
           <Resources
             data={resources}
             mainResourceName="priorityId"
+
           />
-          <AppointmentTooltip showOpenButton showCloseButton showDeleteButton />
+          <AppointmentTooltip showCloseButton headerComponent={this.Header} />
           <Toolbar />
           <DateNavigator />
           <TodayButton />
@@ -814,11 +1027,35 @@ export default class Calendar extends React.PureComponent {
         >
           <AddIcon />
         </StyledFab>
-        <Dialog open={confirmationVisible} onClose={this.cancelDelete}>
+        <Dialog open={confirmationVisibleEliminar} onClose={this.cancelDelete}>
           <DialogTitle>Eliminar Pedido</DialogTitle>
           <DialogContent>
             <DialogContentText>
               ¿Está seguro que desea eliminar este pedido?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={this.toggleConfirmationVisibleEliminar}
+              color="primary"
+              variant="outlined"
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => { this.commitChanges({ deleted: true }, finalizarData); }}
+              color="secondary"
+              variant="outlined"
+            >
+              Eliminar
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={confirmationVisible} onClose={this.cancelDelete}>
+          <DialogTitle>Finalizar Pedido</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              ¿Está seguro que desea finalizar este pedido?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -830,11 +1067,11 @@ export default class Calendar extends React.PureComponent {
               Cancelar
             </Button>
             <Button
-              onClick={this.commitDeletedAppointment}
+              onClick={() => { this.commitChanges({ changed: true }, finalizarData, "Completado"); }}
               color="secondary"
               variant="outlined"
             >
-              Eliminar
+              Finalizar
             </Button>
           </DialogActions>
         </Dialog>

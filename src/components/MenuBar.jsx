@@ -3,7 +3,7 @@ import { Menubar } from "primereact/menubar";
 import { authContext } from "../context/contextUser";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import ReactTooltip from "react-tooltip";
 export const MenuBar = () => {
   const { currentUser, setCurrentUser } = useContext(authContext);
 
@@ -13,7 +13,6 @@ export const MenuBar = () => {
   var perfil = "";
   var logout = "";
   window.sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
-  console.log("soy el del menubar", currentUser);
   if (currentUser.perfil == "admin") {
     items = [
       {
@@ -94,7 +93,10 @@ export const MenuBar = () => {
           <span className="">Bienvenid@, {currentUser.nombre}</span>
           <div className="d-flex">
             <span className="mx-3"> {perfil}</span>
-            <a onClick={() => { window.sessionStorage.removeItem("currentUser"); window.location.href = "/" }} className={logout}><i className="pi pi-sign-out mt-1"></i></a>
+            <a onClick={() => { window.sessionStorage.removeItem("currentUser"); window.location.href = "/" }} className={logout} data-tip data-for="LogoutTooltip"><i className="pi pi-sign-out mt-1"></i> </a>
+            <ReactTooltip id="LogoutTooltip" place="" type="dark" effect="solid">
+              Cerrar Sesión
+            </ReactTooltip>
           </div>
         </div>
       </nav>

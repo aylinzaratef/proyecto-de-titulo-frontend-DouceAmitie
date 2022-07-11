@@ -1,10 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import ReactTooltip from "react-tooltip";
 
 const style = {
   position: "absolute",
@@ -80,15 +79,24 @@ export const ModalCliente = ({ setList }) => {
                   label="RUT"
                   variant="outlined"
                   fullWidth
+                  placeholder="Ej: 12345678-9"
+                  data-tip data-for="RutTooltip"
                   onChange={(e) => datosClientes(e, "rut")}
                 />
+
+                <ReactTooltip id="RutTooltip" place="top" type="info" effect="solid">
+
+                  Ingrese Rut con digito verificador, <b>sin</b> puntos y <b>con</b> guión.
+                </ReactTooltip>
               </div>
+
               <div className="col-12 mt-3">
                 <TextField
                   id="cliente-nombre"
                   label="Nombre"
                   variant="outlined"
                   fullWidth
+                  placeholder="Ej: Juan"
                   onChange={(e) => datosClientes(e, "nombre")}
                 />
               </div>
@@ -98,6 +106,7 @@ export const ModalCliente = ({ setList }) => {
                   label="Primer Apellido"
                   variant="outlined"
                   fullWidth
+                  placeholder="Ej: Rodríguez"
                   onChange={(e) => datosClientes(e, "apellidoPaterno")}
                 />
               </div>
@@ -107,6 +116,7 @@ export const ModalCliente = ({ setList }) => {
                   label="Segundo Apellido"
                   variant="outlined"
                   fullWidth
+                  placeholder="Ej: Pérez"
                   onChange={(e) => datosClientes(e, "apellidoMaterno")}
                 />
               </div>
@@ -116,6 +126,7 @@ export const ModalCliente = ({ setList }) => {
                   label="Teléfono"
                   variant="outlined"
                   fullWidth
+                  placeholder="+56900000000"
                   onChange={(e) => datosClientes(e, "telefono")}
                 />
               </div>
@@ -125,6 +136,7 @@ export const ModalCliente = ({ setList }) => {
                   label="E-mail"
                   variant="outlined"
                   fullWidth
+                  placeholder="correo@correo.cl"
                   onChange={(e) => datosClientes(e, "email")}
                 />
               </div>

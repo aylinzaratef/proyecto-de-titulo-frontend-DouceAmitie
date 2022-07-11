@@ -67,16 +67,20 @@ export class ProductService {
             let horas = endDate[1].split(":");
             let hora = parseInt(horas[0]) + 1 //AQUI SE SUMAN LAS HORAS PARA HACER MAS GRANDE EL CUADRADITO
             newData.endDate = fecha + hora + ":" + horas[1] + ":" + horas[2];
-            let nombrePastel = "";
-            data[key].nombresPasteles.forEach(pastel => {
-                nombrePastel = nombrePastel + pastel + ", ";
-            })
-            newData.title = "Pedido Nro: " + data[key].id_Pedido + " " + data[key].datos_cliente +
-                ", Dirección: " + data[key].direccion_Entrega + ", Productos: " + nombrePastel + " Encargado: "
-                + data[key].datos_encargado + ", Valor Total: " + data[key].valor_total;
+            newData.title = data[key].nombresPasteles.join(", ");
             newData.priorityId = data[key].estado;
             newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
-            console.log(data);
+            newData.datos_encargado = data[key].datos_encargado;
+            newData.datos_cliente = data[key].datos_cliente;
+            newData.id_Pedido = data[key].id_Pedido;
+            newData.observaciones_Pedido = data[key].observaciones_Pedido;
+            newData.fecha_Entrega = data[key].fecha_Entrega;
+            newData.nombresPasteles = data[key].nombresPasteles;
+            newData.valor_total = data[key].valor_total;
+            newData.pasteles = data[key].pasteles;
+            newData.direccion_Entrega = data[key].direccion_Entrega;
+
+
             pedidos.push(newData);
 
 
@@ -103,6 +107,7 @@ export class ProductService {
         });
 
         Object.keys(data).forEach(function (key) {
+
             let newData = {};
             newData.imagen = data[key].imagen;
             newData.nombre = data[key].nombre;
@@ -111,6 +116,7 @@ export class ProductService {
             newData.preparacion = data[key].preparacion;
             newData.video = data[key].urlVideo;
             newData.id = data[key].id_Pastel;
+            newData.descripcion = data[key].descripcion;
 
 
             recetas.push(newData);
@@ -221,11 +227,7 @@ export class ProductService {
             let horas = endDate[1].split(":");
             let hora = parseInt(horas[0]) + 1 //AQUI SE SUMAN LAS HORAS PARA HACER MAS GRANDE EL CUADRADITO
             newData.endDate = fecha + hora + ":" + horas[1] + ":" + horas[2];
-            let nombrePastel = "";
-            data[key].nombresPasteles.forEach(pastel => {
-                nombrePastel = nombrePastel + pastel + ", ";
-            })
-            newData.title = "Pedido Nro: " + data[key].id_Pedido + ", Productos: " + nombrePastel
+            newData.title = data[key].nombresPasteles.join(", ");
             newData.priorityId = data[key].estado;
             newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
 

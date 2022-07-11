@@ -4,7 +4,7 @@ export const authContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => window.sessionStorage.getItem('currentUser') ? JSON.parse(window.sessionStorage.getItem('currentUser')) : {})
-  console.log(currentUser);
+
   return (
     <authContext.Provider value={{ currentUser, setCurrentUser }}>
       {children}

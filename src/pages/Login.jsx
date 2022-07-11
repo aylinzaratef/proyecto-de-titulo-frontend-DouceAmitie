@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ProductService } from "../components/ProductService";
 import { DateRangeSharp } from "@mui/icons-material";
 
+
 const productService = new ProductService();
 export const Login = () => {
   const { currentUser, setCurrentUser } = useContext(authContext);
@@ -43,6 +44,7 @@ export const Login = () => {
   };
   return (
     <div className="background-login">
+      <a href="/"><i className="pi pi-home mx-2 c-blanco"></i></a>
       <div className="container py-5">
         <div className="row d-flex justify-content-end align-items-end">
           <div className="col-12 col-md-7 col-lg-7 col-xl-7">
@@ -70,6 +72,7 @@ export const Login = () => {
                       id="rut"
                       className="form-control form-control-lg"
                       onChange={(e) => onInputChange(e, "rut")}
+                      placeholder="Ej: 12345678-9"
                     />
                   </div>
                   <label className="form-label" htmlFor="typePasswordX">
@@ -80,6 +83,7 @@ export const Login = () => {
                       type="password"
                       id="typePasswordX"
                       className="form-control form-control-lg"
+                      placeholder="*******"
                       onChange={(e) => onInputChange(e, "password")}
                     />
                   </div>

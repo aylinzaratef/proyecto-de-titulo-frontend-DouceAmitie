@@ -13,6 +13,8 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { MenuBar } from "../components/MenuBar";
 import { Video } from "../components/VideoPlayer";
+import { height } from "@mui/system";
+import ReactTooltip from "react-tooltip";
 
 export const Book = () => {
   let emptyProduct = {
@@ -236,17 +238,29 @@ export const Book = () => {
             icon="pi pi-pencil"
             className="p-button-rounded p-button-success mx-2"
             onClick={() => editProduct(rowData)}
+            data-tip data-for="EditarTooltip"
           />
+          <ReactTooltip id="EditarTooltip" place="top" type="success" effect="solid">
+            Editar
+          </ReactTooltip>
           <Button
             icon="pi pi-trash"
             className="p-button-rounded p-button-danger mx-2"
             onClick={() => confirmDeleteProduct(rowData)}
+            data-tip data-for="EliminarTooltip"
           />
+          <ReactTooltip id="EliminarTooltip" place="top" type="error" effect="solid">
+            Eliminar
+          </ReactTooltip>
           <Button
             icon="pi pi-eye"
             className="p-button-rounded p-button-info mx-2"
             onClick={() => viewProduct(rowData)}
+            data-tip data-for="VerTooltip"
           />
+          <ReactTooltip id="VerTooltip" place="top" type="info" effect="solid">
+            Ver
+          </ReactTooltip>
         </div>
       </React.Fragment>
     );
@@ -357,16 +371,26 @@ export const Book = () => {
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
+              field="descripcion"
+              align="justify"
+              header="Descripción"
+              style={{ minWidth: "8rem" }}
+              body={product.descripcion}
+            ></Column>
+            <Column
               body={actionBodyTemplate}
               exportable={false}
-              style={{ minWidth: "8rem" }}
+              style={{ minWidth: "10rem" }}
             ></Column>
           </DataTable>
         </div>
 
         <Dialog
           visible={productDialog}
-          style={{ width: "60%" }}
+          style={{
+            width: "85%",
+            height: "150%"
+          }}
           header="Nueva Receta"
           modal
           className="p-fluid"
@@ -510,7 +534,7 @@ export const Book = () => {
                   src={`${product.imagen}`}
                   onError={(e) =>
                   (e.target.src =
-                    "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+                    '/public/images/errorfoto.png')
                   }
                   alt={product.imagen}
                   className="product-image block m-auto pb-3 imagen-vista"
@@ -568,7 +592,7 @@ export const Book = () => {
               src={`${product.imagen}`}
               onError={(e) =>
               (e.target.src =
-                product.imagen
+                '/public/images/errorfoto.png'
               )
               }
               alt={product.imagen}
@@ -704,7 +728,10 @@ export const Book = () => {
 
         <Dialog
           visible={viewDialog}
-          style={{ width: "60%" }}
+          style={{
+            width: "85%",
+            height: "150%"
+          }}
           header="Receta"
           modal
           className="p-fluid"
@@ -744,7 +771,7 @@ export const Book = () => {
           </div>
           <div className="container" align="center">
             <div className="field mt-3">
-              <label className="mb-3"> Video Explicativo</label>
+              <label className="mb-3"> <b></b></label>
               <Video url={product.video} />
             </div>
           </div>

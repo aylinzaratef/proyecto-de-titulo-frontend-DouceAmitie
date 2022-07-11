@@ -9,6 +9,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { MenuBar } from "../components/MenuBar";
 import { Video } from "../components/VideoPlayer";
+import ReactTooltip from "react-tooltip";
 
 export const BookTrabajador = () => {
   let emptyProduct = {
@@ -77,7 +78,11 @@ export const BookTrabajador = () => {
             icon="pi pi-eye"
             className="p-button-rounded p-button-info mx-2"
             onClick={() => viewProduct(rowData)}
+            data-tip data-for="VerTooltip"
           />
+          <ReactTooltip id="VerTooltip" place="top" type="info" effect="solid">
+            Ver
+          </ReactTooltip>
         </div>
       </React.Fragment>
     );
@@ -157,7 +162,7 @@ export const BookTrabajador = () => {
 
             <div className="text-center">
               <img
-                src={`images/product/${product.imagen}`}
+                src={`${product.imagen}`}
                 onError={(e) =>
                 (e.target.src =
                   '/public/images/errorfoto.png')
