@@ -22,6 +22,8 @@ export const Book = () => {
   };
 
   const [products, setProducts] = useState(null);
+  const [pasteles, setPasteles] = useState(null);
+  const [pastelSeleccionado, setPastelSeleccionado] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
@@ -36,6 +38,7 @@ export const Book = () => {
 
   useEffect(() => {
     productService.getRecetas().then((data) => setProducts(data));
+    productService.getPastel().then((data) => setPasteles(data));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
@@ -43,17 +46,7 @@ export const Book = () => {
   let date = new Date();
   var FechaIngreso = date.toISOString();
 
-  const customBase64Uploader = async (event) => {
-    // convert file to base64 encoded
-    const file = event.files[0];
-    const reader = new FileReader();
-    let blob = await fetch(file.objectURL).then((r) => r.blob()); //blob:url
-    reader.readAsDataURL(blob);
-    reader.onloadend = function () {
-      const base64data = reader.result;
-      console.log(base64data);
-    };
-  };
+
 
   const openNew = () => {
     setProduct(emptyProduct);
@@ -79,14 +72,59 @@ export const Book = () => {
     setDeleteProductDialog(false);
   };
 
-  const saveProduct = async () => {
+  const saveProduct = async (nuevo) => {
     setSubmitted(true);
 
     if (product.nombre.trim()) {
       let _products = [...products];
       let _product = { ...product };
-      if (product.id) {
+      if (!nuevo) {
         const index = findIndexById(product.id);
+
+        var saveData = {};
+        saveData.imagen = _product.imagen;
+        saveData.nombre = _product.nombre;
+        saveData.categoria = _product.categoria;
+        saveData.ingredientes = _product.ingredientes;
+        saveData.preparacion = _product.preparacion;
+        saveData.urlVideo = _product.video;
+        saveData.idReceta = _product.idReceta;
+        saveData.id_Pastel = _product.id_Pastel;
+        console.log("toy aqui mi rey", saveData);
+        let response = await fetch(
+          "http://localhost:8080/Recetas/actualizarReceta",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            },
+            body: JSON.stringify(saveData),
+          }
+        );
+
+        var saveDataPastel = {};
+        saveDataPastel.valor = pastelSeleccionado.valor;
+        saveDataPastel.descripcion = pastelSeleccionado.descripcion;
+        saveDataPastel.id_Pastel = pastelSeleccionado.id_Pastel;
+
+        let responsePastel = await fetch(
+          "http://localhost:8080/Recetas/actualizarPastel",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            },
+            body: JSON.stringify(saveData),
+          }
+        );
+
+
 
         _products[index] = _product;
         toast.current.show({
@@ -139,8 +177,15 @@ export const Book = () => {
   };
 
   const editProduct = (product) => {
+
+    let pastel = pasteles.find((data) => {
+      return data.idPastel == product.id_Pastel
+    })
+    console.log("product", product);
+    setPastelSeleccionado(pastel)
     setProduct({ ...product });
     setEditDialog(true);
+
   };
   const viewProduct = (product) => {
     setProduct({ ...product });
@@ -199,6 +244,11 @@ export const Book = () => {
     _product[`${name}`] = val;
 
     setProduct(_product);
+  };
+
+  const onInputChangePastel = (e, name) => {
+
+    setPastelSeleccionado({ ...pastelSeleccionado, [name]: e.target.value });
   };
 
   const leftToolbarTemplate = () => {
@@ -290,7 +340,7 @@ export const Book = () => {
         label="Guardar"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveProduct}
+        onClick={() => saveProduct(true)}
       />
     </React.Fragment>
   );
@@ -306,7 +356,7 @@ export const Book = () => {
         label="Guardar"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveProduct}
+        onClick={() => saveProduct(false)}
       />
     </React.Fragment>
   );
@@ -369,13 +419,6 @@ export const Book = () => {
               header="Tipo"
               sortable
               style={{ minWidth: "10rem" }}
-            ></Column>
-            <Column
-              field="descripcion"
-              align="justify"
-              header="Descripción"
-              style={{ minWidth: "8rem" }}
-              body={product.descripcion}
             ></Column>
             <Column
               body={actionBodyTemplate}
@@ -580,25 +623,16 @@ export const Book = () => {
         {/*EDITAR RECETA */}
         <Dialog
           visible={editDialog}
-          style={{ width: "60%" }}
+          style={{
+            width: "85%",
+            height: "150%"
+          }}
           header="Editar receta"
           modal
           className="p-fluid"
           footer={productDialogFooter2}
           onHide={hideEditDialog}
         >
-          {product.imagen && (
-            <img
-              src={`${product.imagen}`}
-              onError={(e) =>
-              (e.target.src =
-                '/public/images/errorfoto.png'
-              )
-              }
-              alt={product.imagen}
-              className="product-image block m-auto pb-3"
-            />
-          )}
           <div className="field">
             <label htmlFor="name">Nombre</label>
             <InputText
@@ -712,15 +746,67 @@ export const Book = () => {
               </div>
             </div>
             <div className="col-6">
-              <label htmlFor="imagen"> Imagen</label>
-              <FileUpload
-                chooseLabel="Cargar..."
-                mode="basic"
-                name="imagen[]"
-                url="https://primefaces.org/primereact/showcase/upload.php"
-                accept="image/*"
-                customUpload
-                uploadHandler={customBase64Uploader}
+              <div className="field">
+                <label htmlFor="name">URL Imagen</label>
+                <InputText
+                  id="imagen"
+                  value={product.imagen}
+                  onChange={(e) => onInputChange(e, "imagen")}
+                  required
+                  autoFocus
+                  className={classNames({
+                    "p-invalid": submitted && !product.imagen,
+                  })}
+                />
+                {submitted && !product.imagen && (
+                  <small className="p-error">URL de imagen es requerida.</small>
+                )}
+              </div>
+            </div>
+            <div className="imagen-vista text-right">
+              {product.imagen && (
+                <img
+                  src={`${product.imagen}`}
+                  onError={(e) =>
+                  (e.target.src =
+                    '/public/images/errorfoto.png')
+                  }
+                  alt={product.imagen}
+                  className="product-image block m-auto pb-3 imagen-vista"
+                />
+              )}
+            </div>
+            <div className="col-12 mt-3">
+              <h5>
+                Datos del pastel
+              </h5>
+            </div>
+            <div className="field">
+              <label htmlFor="valor">Precio Unitario</label>
+              <InputText
+                id="valor"
+                value={pastelSeleccionado?.valor}
+                onChange={(e) => onInputChangePastel(e, "valor")}
+                required
+                autoFocus
+                className={classNames({
+                  "p-invalid": submitted && !pastelSeleccionado?.valor,
+                })}
+              />
+              {submitted && !pastelSeleccionado?.valor && (
+                <small className="p-error">Precio es requerido.</small>
+              )}
+            </div>
+            {console.log(pastelSeleccionado)}
+            <div className="field mt-3">
+              <label htmlFor="descripcion">Descripción</label>
+              <InputTextarea
+                id="descripcion"
+                value={pastelSeleccionado?.descripcion}
+                onChange={(e) => onInputChangePastel(e, "descripcion")}
+                required
+                rows={3}
+                cols={20}
               />
             </div>
           </div>

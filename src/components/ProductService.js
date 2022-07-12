@@ -107,7 +107,7 @@ export class ProductService {
         });
 
         Object.keys(data).forEach(function (key) {
-
+            console.log(data);
             let newData = {};
             newData.imagen = data[key].imagen;
             newData.nombre = data[key].nombre;
@@ -115,9 +115,9 @@ export class ProductService {
             newData.ingredientes = data[key].ingredientes;
             newData.preparacion = data[key].preparacion;
             newData.video = data[key].urlVideo;
-            newData.id = data[key].id_Pastel;
+            newData.id_Pastel = data[key].id_Pastel;
             newData.descripcion = data[key].descripcion;
-
+            newData.idReceta = data[key].idReceta;
 
             recetas.push(newData);
         });
@@ -176,6 +176,7 @@ export class ProductService {
             newData.idPastel = data[key].idPastel; //A NEWDATA  SE LE CREA UN INDICE (QUE EN ESTE CASO ES IDPASTEL) Y A ESE INDICE SE LE ASIGNA UN VALOR QUE VIENE DESDE EL BACK EN ESTE CASO ES DATA[KEY]
             newData.nombre = data[key].nombre;
             newData.valor = data[key].precio;
+            newData.descripcion = data[key].descripcion;
             pasteles.push(newData); //AGREGA AL ARREGLO
 
         });
