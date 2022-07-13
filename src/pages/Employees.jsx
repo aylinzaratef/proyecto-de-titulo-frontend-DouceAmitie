@@ -379,7 +379,10 @@ export const Employees = () => {
         {/*AGREGAR TRABAJADOR   */}
         <Dialog
           visible={productDialog}
-          style={{ width: "60%" }}
+          style={{
+            width: "85%",
+            height: "150%"
+          }}
           header="Nuevo Trabajador"
           modal
           className="p-fluid"
@@ -407,7 +410,6 @@ export const Employees = () => {
               value={product.nombre}
               onChange={(e) => onInputChange(e, "nombre")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.nombre,
               })}
@@ -423,7 +425,6 @@ export const Employees = () => {
               value={product.apellidoPaterno}
               onChange={(e) => onInputChange(e, "apellidoPaterno")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.apellidoPaterno,
               })}
@@ -439,7 +440,6 @@ export const Employees = () => {
               value={product.apellidoMaterno}
               onChange={(e) => onInputChange(e, "apellidoMaterno")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.apellidoMaterno,
               })}
@@ -455,7 +455,6 @@ export const Employees = () => {
               value={product.password}
               onChange={(e) => onInputChange(e, "password")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.password,
               })}
@@ -506,7 +505,6 @@ export const Employees = () => {
               value={product.telefono}
               onChange={(e) => onInputChange(e, "telefono")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.telefono,
               })}
@@ -524,7 +522,6 @@ export const Employees = () => {
               value={product.email}
               onChange={(e) => onInputChange(e, "email")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.email,
               })}
@@ -540,7 +537,6 @@ export const Employees = () => {
               value={product.direccion}
               onChange={(e) => onInputChange(e, "direccion")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.direccion,
               })}
@@ -553,7 +549,10 @@ export const Employees = () => {
         {/*EDITAR TRABAJADOR   */}
         <Dialog
           visible={editDialog}
-          style={{ width: "60%" }}
+          style={{
+            width: "85%",
+            height: "150%"
+          }}
           header="Editar Trabajador"
           modal
           className="p-fluid"

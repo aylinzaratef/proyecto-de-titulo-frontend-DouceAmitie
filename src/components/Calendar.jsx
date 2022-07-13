@@ -933,7 +933,6 @@ export default class Calendar extends React.PureComponent {
         }
       }
       if (deleted) {
-        console.log("me eliminaron :(");
         fetch(
           "http://localhost:8080/Pedidos/eliminarPedido/" + saveData.id_Pedido,
           {

@@ -175,7 +175,7 @@ export class ProductService {
             let newData = {};  //INICIALIZANDO OBJETO
             newData.idPastel = data[key].idPastel; //A NEWDATA  SE LE CREA UN INDICE (QUE EN ESTE CASO ES IDPASTEL) Y A ESE INDICE SE LE ASIGNA UN VALOR QUE VIENE DESDE EL BACK EN ESTE CASO ES DATA[KEY]
             newData.nombre = data[key].nombre;
-            newData.valor = data[key].precio;
+            newData.precio = data[key].precio;
             newData.descripcion = data[key].descripcion;
             pasteles.push(newData); //AGREGA AL ARREGLO
 

@@ -15,7 +15,7 @@ import { MenuBar } from "../components/MenuBar";
 import { Video } from "../components/VideoPlayer";
 import { height } from "@mui/system";
 import ReactTooltip from "react-tooltip";
-
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 export const Book = () => {
   let emptyProduct = {
 
@@ -32,19 +32,46 @@ export const Book = () => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
+  console.log(globalFilter);
   const toast = useRef(null);
   const dt = useRef(null);
   const productService = new ProductService();
+  const [filters, setFilters] = useState(null);
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+
 
   useEffect(() => {
     productService.getRecetas().then((data) => setProducts(data));
     productService.getPastel().then((data) => setPasteles(data));
+    initFilters();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
-  //PEDIDOS TRAE FECHA Y HORA
-  let date = new Date();
-  var FechaIngreso = date.toISOString();
+  const clearFilter = () => {
+    initFilters();
+  }
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+    _filters['global'].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  }
+
+  const initFilters = () => {
+    setFilters({
+      'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+      'nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'categoria': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'activity': { value: null, matchMode: FilterMatchMode.BETWEEN },
+      'verified': { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
+    setGlobalFilterValue('');
+  }
+
+
 
 
 
@@ -78,9 +105,10 @@ export const Book = () => {
     if (product.nombre.trim()) {
       let _products = [...products];
       let _product = { ...product };
+      let _pasteles = [...pasteles];
+      let _pastelSeleccionado = { ...pastelSeleccionado };
       if (!nuevo) {
-        const index = findIndexById(product.id);
-
+        const index = findIndexById(product.idReceta);
         var saveData = {};
         saveData.imagen = _product.imagen;
         saveData.nombre = _product.nombre;
@@ -90,7 +118,6 @@ export const Book = () => {
         saveData.urlVideo = _product.video;
         saveData.idReceta = _product.idReceta;
         saveData.id_Pastel = _product.id_Pastel;
-        console.log("toy aqui mi rey", saveData);
         let response = await fetch(
           "http://localhost:8080/Recetas/actualizarReceta",
           {
@@ -105,10 +132,13 @@ export const Book = () => {
           }
         );
 
+        const indexPastel = findIndexByIdPastel(pastelSeleccionado.idPastel);
         var saveDataPastel = {};
-        saveDataPastel.valor = pastelSeleccionado.valor;
+        saveDataPastel.precio = pastelSeleccionado.precio;
         saveDataPastel.descripcion = pastelSeleccionado.descripcion;
-        saveDataPastel.id_Pastel = pastelSeleccionado.id_Pastel;
+        saveDataPastel.idPastel = pastelSeleccionado.idPastel;
+        saveDataPastel.nombre = pastelSeleccionado.nombre;
+        console.log(pastelSeleccionado);
 
         let responsePastel = await fetch(
           "http://localhost:8080/Recetas/actualizarPastel",
@@ -120,13 +150,15 @@ export const Book = () => {
               "X-Request-With": "XMLHttpRequest",
               "Access-Control-Allow-Origin": "origin-list",
             },
-            body: JSON.stringify(saveData),
+            body: JSON.stringify(saveDataPastel),
           }
         );
 
 
 
         _products[index] = _product;
+        _pasteles[indexPastel] = _pastelSeleccionado;
+        console.log("soy indexpastel", _pastelSeleccionado);
         toast.current.show({
           severity: "success",
           summary: "Completado",
@@ -148,7 +180,7 @@ export const Book = () => {
         saveData.descripcion = _product.descripcion;
         saveData.urlVideo = _product.video;
 
-        console.log(_product);
+
         let response = await fetch(
           "http://localhost:8080/Recetas/ingresarReceta",
           {
@@ -173,15 +205,15 @@ export const Book = () => {
       }
 
       setProducts(_products);
+      setPasteles(_pasteles);
     }
   };
 
   const editProduct = (product) => {
-
+    console.log(product);
     let pastel = pasteles.find((data) => {
       return data.idPastel == product.id_Pastel
     })
-    console.log("product", product);
     setPastelSeleccionado(pastel)
     setProduct({ ...product });
     setEditDialog(true);
@@ -198,7 +230,39 @@ export const Book = () => {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = products.filter((val) => val.idReceta !== product.idReceta);
+    console.log(product);
+    fetch(
+      "http://localhost:8080/Recetas/eliminarReceta/" + product.idReceta,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Request-With": "XMLHttpRequest",
+          "Access-Control-Allow-Origin": "origin-list",
+        }
+
+      }
+
+    );
+
+    fetch(
+      "http://localhost:8080/Recetas/eliminarPastel/" + product.id_Pastel,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Request-With": "XMLHttpRequest",
+          "Access-Control-Allow-Origin": "origin-list",
+        }
+
+      }
+
+    );
+
+
     setProducts(_products);
     setDeleteProductDialog(false);
     setProduct(emptyProduct);
@@ -208,12 +272,25 @@ export const Book = () => {
       detail: "Receta Eliminada",
       life: 3000,
     });
+
   };
 
   const findIndexById = (id) => {
     let index = -1;
     for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+      if (products[i].idReceta === id) {
+        index = i;
+        break;
+      }
+    }
+
+    return index;
+  };
+
+  const findIndexByIdPastel = (id) => {
+    let index = -1;
+    for (let i = 0; i < pasteles.length; i++) {
+      if (pasteles[i].idPastel === id) {
         index = i;
         break;
       }
@@ -322,7 +399,7 @@ export const Book = () => {
         <i className="pi pi-search" />
         <InputText
           type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          onChange={onGlobalFilterChange}
           placeholder="Búsqueda"
         />
       </span>
@@ -396,7 +473,8 @@ export const Book = () => {
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-            globalFilter={globalFilter}
+            filters={filters}
+            globalFilterFields={['nombre', 'categoria']}
             header={header}
             responsiveLayout="scroll"
           >
@@ -543,7 +621,6 @@ export const Book = () => {
                   value={product.video}
                   onChange={(e) => onInputChange(e, "video")}
                   required
-                  autoFocus
                   className={classNames({
                     "p-invalid": submitted && !product.video,
                   })}
@@ -561,7 +638,6 @@ export const Book = () => {
                   value={product.imagen}
                   onChange={(e) => onInputChange(e, "imagen")}
                   required
-                  autoFocus
                   className={classNames({
                     "p-invalid": submitted && !product.imagen,
                   })}
@@ -597,7 +673,6 @@ export const Book = () => {
                 value={product.precio}
                 onChange={(e) => onInputChange(e, "precio")}
                 required
-                autoFocus
                 className={classNames({
                   "p-invalid": submitted && !product.precio,
                 })}
@@ -735,7 +810,6 @@ export const Book = () => {
                   value={product.video}
                   onChange={(e) => onInputChange(e, "video")}
                   required
-                  autoFocus
                   className={classNames({
                     "p-invalid": submitted && !product.video,
                   })}
@@ -753,7 +827,6 @@ export const Book = () => {
                   value={product.imagen}
                   onChange={(e) => onInputChange(e, "imagen")}
                   required
-                  autoFocus
                   className={classNames({
                     "p-invalid": submitted && !product.imagen,
                   })}
@@ -782,22 +855,20 @@ export const Book = () => {
               </h5>
             </div>
             <div className="field">
-              <label htmlFor="valor">Precio Unitario</label>
+              <label htmlFor="precio">Precio Unitario</label>
               <InputText
-                id="valor"
-                value={pastelSeleccionado?.valor}
-                onChange={(e) => onInputChangePastel(e, "valor")}
+                id="precio"
+                value={pastelSeleccionado?.precio}
+                onChange={(e) => onInputChangePastel(e, "precio")}
                 required
-                autoFocus
                 className={classNames({
-                  "p-invalid": submitted && !pastelSeleccionado?.valor,
+                  "p-invalid": submitted && !pastelSeleccionado?.precio,
                 })}
               />
-              {submitted && !pastelSeleccionado?.valor && (
+              {submitted && !pastelSeleccionado?.precio && (
                 <small className="p-error">Precio es requerido.</small>
               )}
             </div>
-            {console.log(pastelSeleccionado)}
             <div className="field mt-3">
               <label htmlFor="descripcion">Descripción</label>
               <InputTextarea
