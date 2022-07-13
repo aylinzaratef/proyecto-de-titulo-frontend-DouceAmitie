@@ -32,11 +32,15 @@ export class ProductService {
             newData.rut = data[key].rut;
             newData.nombre = data[key].nombre + " " + data[key].apellidoPaterno + " " + data[key].apellidoMaterno;
             newData.cargo = data[key].permisos == 1 ? "Administrador" : "Pastelero";
+            newData.permisos = String(data[key].permisos);
             newData.telefono = data[key].telefono;
             newData.email = data[key].email;
             newData.direccion = data[key].direccion;
             newData.fechaIngreso = data[key].fechaIngreso;
-
+            newData.nombres = data[key].nombre;
+            newData.primerApellido = data[key].apellidoPaterno;
+            newData.segundoApellido = data[key].apellidoMaterno;
+            newData.password = data[key].password;
             trabajadores.push(newData);
 
 

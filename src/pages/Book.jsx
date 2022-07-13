@@ -31,8 +31,6 @@ export const Book = () => {
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
-  console.log(globalFilter);
   const toast = useRef(null);
   const dt = useRef(null);
   const productService = new ProductService();

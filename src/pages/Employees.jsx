@@ -10,11 +10,13 @@ import { RadioButton } from "primereact/radiobutton";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { MenuBar } from "../components/MenuBar";
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 
 export const Employees = () => {
   let emptyProduct = {
     rut: null,
     nombre: "",
+    nombres: "",
     cargo: null,
     telefono: "",
     email: null,
@@ -28,14 +30,50 @@ export const Employees = () => {
   const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
   const productService = new ProductService();
+  const [filters, setFilters] = useState(null);
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+
+
+
 
   useEffect(() => {
     productService.getEmployees().then((data) => setProducts(data));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    initFilters();
+  }, []);
+
+  const clearFilter = () => {
+    initFilters();
+  }
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+    _filters['global'].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  }
+
+  const initFilters = () => {
+    setFilters({
+      'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+      'rut': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'cargo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'direccion': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'activity': { value: null, matchMode: FilterMatchMode.BETWEEN },
+      'verified': { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
+    setGlobalFilterValue('');
+  }
+
+
+
+
   const openNew = () => {
     setProduct(emptyProduct);
     setSubmitted(false);
@@ -57,13 +95,62 @@ export const Employees = () => {
   };
 
   //agregar trabajador 
-  const saveProduct = async () => {
+  const saveProduct = async (nuevo) => {
     setSubmitted(true);
     if (product.nombre.trim()) {
       let _products = [...products];
       let _product = { ...product };
       const index = findIndexById(product.rut);
-      if (index >= 0) {
+      if (!nuevo) {
+        var saveData = {};
+
+        saveData.rut = _product.rut;
+        saveData.nombre = _product.nombres;
+        saveData.apellidoPaterno = _product.primerApellido;
+        saveData.apellidoMaterno = _product.segundoApellido;
+        if (_product.newPassword && _product.newPassword != "") {
+          saveData.password = _product.newPassword;
+        } else {
+          saveData.password = _product.password;
+        }
+        saveData.telefono = _product.telefono;
+        saveData.email = _product.email;
+        saveData.direccion = _product.direccion;
+        saveData.fechaIngreso = fechaIngreso;
+        saveData.permisos = parseInt(_product.permisos);
+
+        console.log("un texto antes", _product);
+        console.log("un texto antes 2", saveData);
+
+        let response = await fetch(
+          "http://localhost:8080/Pasteleros/actualizar",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Request-With": "XMLHttpRequest",
+              "Access-Control-Allow-Origin": "origin-list",
+            },
+            body: JSON.stringify(saveData),
+          }
+        );
+
+        var newResponse = await response.text();
+
+        if (_product.permisos == "1") {
+          _product.cargo = "Administrador";
+        } else {
+          _product.cargo = "Pastelero";
+        }
+
+
+
+
+        _product.nombre = _product.nombres + " " + _product.primerApellido + " " + _product.segundoApellido;
+
+
+
         _products[index] = _product;
         toast.current.show({
           severity: "success",
@@ -145,6 +232,27 @@ export const Employees = () => {
 
   const deleteProduct = () => {
     let _products = products.filter((val) => val.rut !== product.rut);
+
+    fetch(
+      "http://localhost:8080/Pasteleros/eliminar/" + product.rut,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Request-With": "XMLHttpRequest",
+          "Access-Control-Allow-Origin": "origin-list",
+        }
+
+      }
+
+    );
+    console.log(product.rut);
+
+
+
+
+
     setProducts(_products);
     setDeleteProductDialog(false);
     setProduct(emptyProduct);
@@ -181,6 +289,11 @@ export const Employees = () => {
   const onCategoryChange = (e) => {
     let _product = { ...product };
     _product["cargo"] = e.value;
+    setProduct(_product);
+  };
+  const onPermisosChange = (e) => {
+    let _product = { ...product };
+    _product["permisos"] = e.value;
     setProduct(_product);
   };
 
@@ -230,7 +343,7 @@ export const Employees = () => {
         <i className="pi pi-search" />
         <InputText
           type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          onChange={onGlobalFilterChange}
           placeholder="Búsqueda"
         />
       </span>
@@ -248,7 +361,7 @@ export const Employees = () => {
         label="Guardar"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveProduct}
+        onClick={() => saveProduct(true)}
       />
     </React.Fragment>
   );
@@ -264,7 +377,7 @@ export const Employees = () => {
         label="Guardar"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveProduct}
+        onClick={() => saveProduct(false)}
       />
     </React.Fragment>
   );
@@ -303,7 +416,8 @@ export const Employees = () => {
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-            globalFilter={globalFilter}
+            filters={filters}
+            globalFilterFields={['rut', 'nombre', 'cargo', 'direccion']}
             header={header}
             responsiveLayout="scroll"
           >
@@ -486,16 +600,6 @@ export const Employees = () => {
                 />
                 <label htmlFor="category2">Pastelero</label>
               </div>
-              <div className="field-radiobutton col-6">
-                <RadioButton
-                  inputId="category3"
-                  name="cargo"
-                  value="3"
-                  onChange={onCategoryChange}
-                  checked={product.cargo === "3"}
-                />
-                <label htmlFor="category3">Repartidor</label>
-              </div>
             </div>
           </div>
           <div className="field mt-3">
@@ -568,25 +672,52 @@ export const Employees = () => {
               required
               autoFocus
               className={classNames({ "p-invalid": submitted && !product.rut })}
+              readOnly
             />
-            {submitted && !product.rut && (
-              <small className="p-error">Rut es requerido.</small>
+          </div>
+          <div className="field mt-3">
+            <label htmlFor="nombres">Nombre</label>
+            <InputText
+              id="nombres"
+              value={product.nombres}
+              onChange={(e) => onInputChange(e, "nombres")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !product.nombres,
+              })}
+            />
+            {submitted && !product.nombres && (
+              <small className="p-error">Nombre es requerido.</small>
             )}
           </div>
           <div className="field mt-3">
-            <label htmlFor="nombre">Nombre Completo</label>
+            <label htmlFor="primerApellido">Primer Apellido</label>
             <InputText
-              id="nombre"
-              value={product.nombre}
-              onChange={(e) => onInputChange(e, "nombre")}
+              id="primerApellido"
+              value={product.primerApellido}
+              onChange={(e) => onInputChange(e, "primerApellido")}
               required
-              autoFocus
               className={classNames({
-                "p-invalid": submitted && !product.nombre,
+                "p-invalid": submitted && !product.primerApellido,
               })}
             />
-            {submitted && !product.nombre && (
-              <small className="p-error">Nombre es requerido.</small>
+            {submitted && !product.primerApellido && (
+              <small className="p-error">Primer Apellido requerido.</small>
+            )}
+          </div>
+          <div className="field mt-3">
+            <label htmlFor="segundoApellido">Segundo Apellido</label>
+            <InputText
+              id="segundoApellido"
+              value={product.segundoApellido}
+              onChange={(e) => onInputChange(e, "segundoApellido")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !product.segundoApellido,
+              })}
+            />
+            {submitted && !product.segundoApellido && (
+              <small className="p-error">Segundo Apellido es requerido.</small>
             )}
           </div>
           <div className="field mt-3">
@@ -594,33 +725,23 @@ export const Employees = () => {
             <div className="formgrid grid">
               <div className="field-radiobutton col-6">
                 <RadioButton
-                  inputId="category1"
-                  name="category"
-                  value="Adminitrador"
-                  onChange={onCategoryChange}
-                  checked={product.category === "Administrador"}
+                  inputId="permisos1"
+                  name="permisos"
+                  value="1"
+                  onChange={onPermisosChange}
+                  checked={product.permisos === "1"}
                 />
-                <label htmlFor="category1">Adminitrador</label>
+                <label htmlFor="category1">Administrador</label>
               </div>
               <div className="field-radiobutton col-6">
                 <RadioButton
-                  inputId="category2"
-                  name="category"
-                  value="Pastelero"
-                  onChange={onCategoryChange}
-                  checked={product.category === "Pastelero"}
+                  inputId="permisos2"
+                  name="permisos"
+                  value="2"
+                  onChange={onPermisosChange}
+                  checked={product.permisos === "2"}
                 />
                 <label htmlFor="category2">Pastelero</label>
-              </div>
-              <div className="field-radiobutton col-6">
-                <RadioButton
-                  inputId="category3"
-                  name="category"
-                  value="Repartidor"
-                  onChange={onCategoryChange}
-                  checked={product.category === "Repartidor"}
-                />
-                <label htmlFor="category3">Repartidor</label>
               </div>
             </div>
           </div>
@@ -631,7 +752,6 @@ export const Employees = () => {
               value={product.telefono}
               onChange={(e) => onInputChange(e, "telefono")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.telefono,
               })}
@@ -649,7 +769,6 @@ export const Employees = () => {
               value={product.email}
               onChange={(e) => onInputChange(e, "email")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.email,
               })}
@@ -665,7 +784,6 @@ export const Employees = () => {
               value={product.direccion}
               onChange={(e) => onInputChange(e, "direccion")}
               required
-              autoFocus
               className={classNames({
                 "p-invalid": submitted && !product.direccion,
               })}
@@ -673,6 +791,15 @@ export const Employees = () => {
             {submitted && !product.direccion && (
               <small className="p-error">Dirección es requerida.</small>
             )}
+          </div>
+          <div className="field mt-3">
+            <label htmlFor="newPassword">Nueva Contraseña</label>
+            <InputText
+              id="newPassword"
+              value={product.newPassword}
+              onChange={(e) => onInputChange(e, "newPassword")}
+
+            />
           </div>
         </Dialog>
       </div>
