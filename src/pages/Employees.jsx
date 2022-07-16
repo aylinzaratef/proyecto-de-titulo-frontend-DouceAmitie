@@ -119,9 +119,6 @@ export const Employees = () => {
         saveData.fechaIngreso = fechaIngreso;
         saveData.permisos = parseInt(_product.permisos);
 
-        console.log("un texto antes", _product);
-        console.log("un texto antes 2", saveData);
-
         let response = await fetch(
           "http://localhost:8080/Pasteleros/actualizar",
           {

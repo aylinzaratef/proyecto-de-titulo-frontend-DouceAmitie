@@ -54,6 +54,7 @@
     color: $color_rosafuerte  !important;
     background-color: $color_dorado  !important;
     border-color: $color_dorado  !important;
+    box-shadow: 0 0 0 0.25rem rgb(234 51 93 / 25%) !important;
 }
 
 .img-calendario {
@@ -146,4 +147,33 @@
     padding: 0.5rem 2rem;
     border-radius: 0.2rem;
     border-color: #dd1d5f;
+}
+
+.css-1rit21i-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #dd1d5f !important;
+}
+
+.p.dropdown:not(.p-disabled).p-focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem #c7d2fe;
+    border-color: #dd1d5f !important;
+}
+
+.p-inputtext:enabled:hover {
+    border-color: #EA335D !important;
+    box-shadow: 0 0 0 0.25rem rgb(234 51 93 / 25%) !important;
+}
+
+.p-inputtext:enabled:focus {
+    border-color: #EA335D !important;
+    box-shadow: 0 0 0 0.25rem rgb(234 51 93 / 25%) !important;
+}
+
+.p-button.p-button-text {
+    color: #EA335D !important;
+}
+
+.p-button.p-button-text:enabled:active.p-button.p-button-text:not(button):not(a):not(.p-disabled):active {
+    background: #EA335D !important;
 }

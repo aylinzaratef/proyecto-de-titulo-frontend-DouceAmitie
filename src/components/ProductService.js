@@ -1,6 +1,17 @@
 { /*AQUI SE IMPORTAN LOS DATOS DE LA API PARA QUE SEAN REFLEJADOS EN LAS VISTAS*/ }
 
-
+function obtenerMesByFecha(fecha) {
+    var date = new Date(fecha);
+    var mes = date.getMonth();
+    var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"
+        , "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    return mes + 1;
+}
+function obtenerNombreMes(mes) {
+    var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"
+        , "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    return meses[parseInt(mes) - 1];
+}
 export class ProductService {
 
     getProductosDestacados() {
@@ -10,6 +21,11 @@ export class ProductService {
     getProducts() {
         return fetch('data/products.json').then(res => res.json()).then(d => d.data);
     }
+
+
+
+
+
 
 
 
@@ -182,7 +198,7 @@ export class ProductService {
             newData.precio = data[key].precio;
             newData.descripcion = data[key].descripcion;
             pasteles.push(newData); //AGREGA AL ARREGLO
-
+            console.log(data);
         });
 
         return pasteles; //RETORNA EN VISTA
@@ -244,5 +260,62 @@ export class ProductService {
 
         return pedidos;
 
+    }
+
+    getGanancias = async () => {
+        let dataMaxima = [];
+        let dataMaximaAnio = [];
+        let anios = { "2018": 0, "2019": 1, "2020": 2, "2021": 3, "2022": 4 };
+
+        for (var i = 0; i < 5; i++) {
+            dataMaximaAnio[i] = 0;
+        }
+        let data = await fetch('http://localhost:8080/Estadisticas/getGanancias')
+            .then((response) => {
+                return response.json().then((data) => {
+                    return data;
+                }).catch((err) => {
+                    console.log(err);
+                })
+            });
+
+        Object.keys(data).forEach(function (key) {
+            let fecha = data[key].fechaGanancia.split("-");
+            console.log("años", anios["2022"]);
+            dataMaximaAnio[anios[fecha[0]]] = dataMaximaAnio[anios[fecha[0]]] == undefined ? dataMaximaAnio[anios[fecha[0]]] : dataMaximaAnio[anios[fecha[0]]] + data[key].gananciaDiaria;
+            dataMaxima[fecha[0]] = dataMaxima[fecha[0]] != undefined ? dataMaxima[fecha[0]] : [0, 0, 0, 0, 0, 0, 0
+                , 0, 0, 0, 0, 0];
+            dataMaxima[fecha[0]][parseInt(fecha[1]) - 1] = dataMaxima[fecha[0]][parseInt(fecha[1]) - 1] != undefined ? dataMaxima[fecha[0]][parseInt(fecha[1]) - 1] + data[key].gananciaDiaria : data[key].gananciaDiaria;
+        });
+
+        return { dataMaxima: dataMaxima, dataMaximaAnio: dataMaximaAnio };
+    }
+    getGastos = async () => {
+        let dataMaxima = [];
+        let dataMaximaAnio = [];
+        let anios = { "2018": 0, "2019": 1, "2020": 2, "2021": 3, "2022": 4 };
+
+        for (var i = 0; i < 5; i++) {
+            dataMaximaAnio[i] = 0;
+        }
+        let data = await fetch('http://localhost:8080/Estadisticas/getGastos')
+            .then((response) => {
+                return response.json().then((data) => {
+                    return data;
+                }).catch((err) => {
+                    console.log(err);
+                })
+            });
+
+        Object.keys(data).forEach(function (key) {
+            let fecha = data[key].fechaGasto.split("-");
+            console.log("años", anios["2022"]);
+            dataMaximaAnio[anios[fecha[0]]] = dataMaximaAnio[anios[fecha[0]]] == undefined ? dataMaximaAnio[anios[fecha[0]]] : dataMaximaAnio[anios[fecha[0]]] + data[key].gastoDiario;
+            dataMaxima[fecha[0]] = dataMaxima[fecha[0]] != undefined ? dataMaxima[fecha[0]] : [0, 0, 0, 0, 0, 0, 0
+                , 0, 0, 0, 0, 0];
+            dataMaxima[fecha[0]][parseInt(fecha[1]) - 1] = dataMaxima[fecha[0]][parseInt(fecha[1]) - 1] != undefined ? dataMaxima[fecha[0]][parseInt(fecha[1]) - 1] + data[key].gastoDiario : data[key].gastoDiario;
+        });
+
+        return { dataMaxima: dataMaxima, dataMaximaAnio: dataMaximaAnio };
     }
 }

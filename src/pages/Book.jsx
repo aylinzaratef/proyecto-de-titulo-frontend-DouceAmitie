@@ -229,7 +229,6 @@ export const Book = () => {
 
   const deleteProduct = () => {
     let _products = products.filter((val) => val.idReceta !== product.idReceta);
-    console.log(product);
     fetch(
       "http://localhost:8080/Recetas/eliminarReceta/" + product.idReceta,
       {
@@ -607,6 +606,26 @@ export const Book = () => {
                   checked={product.categoria === "Queque"}
                 />
                 <label htmlFor="category5">Queque</label>
+              </div>
+              <div className="field-radiobutton col-6">
+                <RadioButton
+                  inputId="category6"
+                  name="categoria"
+                  value="Pastel"
+                  onChange={onCategoryChange}
+                  checked={product.categoria === "Pastel"}
+                />
+                <label htmlFor="category6">Pastel</label>
+              </div>
+              <div className="field-radiobutton col-6">
+                <RadioButton
+                  inputId="category7"
+                  name="categoria"
+                  value="Dulces"
+                  onChange={onCategoryChange}
+                  checked={product.categoria === "Dulces"}
+                />
+                <label htmlFor="category7">Dulces y Bombones</label>
               </div>
             </div>
           </div>

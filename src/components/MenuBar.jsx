@@ -25,9 +25,24 @@ export const MenuBar = () => {
       {
         label: "Estadísticas",
         icon: "pi pi-fw pi-chart-line",
-        command: (event) => {
-          navigate("/statistics");
-        },
+        items: [
+          {
+            label: "Gráfico de Barras",
+            icon: "pi pi-fw pi-chart-bar",
+            command: (event) => {
+              window.location.href = "/statistics";
+            },
+
+
+          },
+          {
+            label: "Caja de Costos",
+            icon: "pi pi-fw pi-box",
+            command: (event) => {
+              navigate("/box");
+            },
+          }],
+
       },
       {
         label: "Recetario",
@@ -44,13 +59,7 @@ export const MenuBar = () => {
           navigate("/employees");
         },
       },
-      {
-        label: "Caja",
-        icon: "pi pi-fw pi-dollar",
-        command: (event) => {
-          navigate("/box");
-        },
-      },
+
     ];
     color = "bg-dorado c-rosa";
     logout = "c-rosa"

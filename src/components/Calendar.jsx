@@ -539,11 +539,11 @@ class AppointmentFormContainerBasic extends React.PureComponent {
                   </div>
                 </div>
                 <div className="col-4 mt-3">
-                  <button className="btn btn-rosado" onClick={() => {
+                  <button className="btn btn-rosa" onClick={() => {
                     const pastel = pasteleslist.find(x => x.idPastel == pastelID)
                     this.setState({
                       dataPasteles: this.state.dataPasteles.concat({
-                        nombre: pastel.nombre || "", cantidad: cantidadID, id_Pastel: pastelID, valor: pastel.valor || " "
+                        nombre: pastel.nombre || "", cantidad: cantidadID, id_Pastel: pastelID, valor: pastel.precio || " "
                       })
                     })
                   }}>Agregar producto</button>
@@ -893,7 +893,7 @@ export default class Calendar extends React.PureComponent {
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
-        console.log("soy el guardado ", saveData);
+
         saveData.priorityId = estado
         let actualizarData = {}
         actualizarData.direccion_Entrega = saveData.direccion_Entrega;
@@ -906,7 +906,7 @@ export default class Calendar extends React.PureComponent {
         actualizarData.pasteles = saveData.pasteles;
         actualizarData.nombresPasteles = saveData.nombresPasteles;
         actualizarData.valor_total = saveData.valor_total;
-
+        console.log("soy el guardado ", actualizarData);
         fetch(
           "http://localhost:8080/Pedidos/actualizarPedido",
           {

@@ -345,3 +345,11 @@ a:hover {
     font-weight: 300;
 
 }
+
+.p-menubar.p-menuitem.p-menuitem-active {
+    color: #dd1d5f !important;
+}
+
+.p-link {
+    display: inline !important;
+}

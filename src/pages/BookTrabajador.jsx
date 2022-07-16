@@ -96,6 +96,7 @@ export const BookTrabajador = () => {
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
           placeholder="Búsqueda"
+          className="input-form"
         />
       </span>
     </div>

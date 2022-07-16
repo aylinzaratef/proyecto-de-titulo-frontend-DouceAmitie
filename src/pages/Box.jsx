@@ -23,7 +23,26 @@ export const Box = () => {
     return errors;
   };
 
-  const onSubmit = (data, form) => {
+  const onSubmit = async (data, form) => {
+    var saveData = {};
+    saveData.gastoDiario = data.name;
+    saveData.fechaGasto = data.date.toISOString().split("T")[0].toString();
+    console.log(saveData);
+    let response = await fetch(
+      "http://localhost:8080/Estadisticas/ingresarGasto",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Request-With": "XMLHttpRequest",
+          "Access-Control-Allow-Origin": "origin-list",
+        },
+        body: JSON.stringify(saveData),
+      }
+
+    );
+    var newResponse = await response.text();
     setFormData(data);
     setShowMessage(true);
 
@@ -36,6 +55,8 @@ export const Box = () => {
       isFormFieldValid(meta) && <small className="p-error">{meta.error}</small>
     );
   };
+
+
 
   const dialogFooter = (
     <div className="flex justify-content-center">
@@ -79,7 +100,7 @@ export const Box = () => {
             <h5 className="text-center">Ingresar costo de compras</h5>
             <Form
               onSubmit={onSubmit}
-              initialValues={{ name: "", email: "", password: "", date: null }}
+              initialValues={{ name: "", date: "" }}
               validate={validate}
               render={({ handleSubmit }) => (
                 <form onSubmit={handleSubmit} className="p-fluid">
@@ -89,7 +110,7 @@ export const Box = () => {
                       <div className="field mt-5">
                         <span className="p-float-label">
                           <InputText
-                            id="name"
+                            id="costo"
                             {...input}
                             autoFocus
                             className={classNames({
@@ -97,7 +118,7 @@ export const Box = () => {
                             })}
                           />
                           <label
-                            htmlFor="name"
+                            htmlFor="costo"
                             className={classNames({
                               "p-error": isFormFieldValid(meta),
                             })}
@@ -110,32 +131,6 @@ export const Box = () => {
                     )}
                   />
                   <Field
-                    name="descripcion"
-                    render={({ input, meta }) => (
-                      <div className="field mt-5">
-                        <span className="p-float-label">
-                          <InputTextarea
-                            id="descripcion"
-                            {...input}
-                            autoFocus
-                            className={classNames({
-                              "p-invalid": isFormFieldValid(meta),
-                            })}
-                          />
-                          <label
-                            htmlFor="descripcion"
-                            className={classNames({
-                              "p-error": isFormFieldValid(meta),
-                            })}
-                          >
-                            Descripción
-                          </label>
-                        </span>
-                      </div>
-                    )}
-                  />
-
-                  <Field
                     name="date"
                     render={({ input }) => (
                       <div className="field mt-5">
@@ -143,10 +138,11 @@ export const Box = () => {
                           <Calendar
                             id="date"
                             {...input}
-                            vvvvvvvvvvvvvvvvv
-                            dateFormat="dd/mm/yy"
-                            mask="99/99/9999"
+
+                            dateFormat="yy/mm/dd"
+                            mask="9999/99/99"
                             showIcon
+
                           />
                           <label htmlFor="date">Fecha</label>
                         </span>

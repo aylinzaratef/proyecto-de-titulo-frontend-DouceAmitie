@@ -17,6 +17,15 @@ export const Login = () => {
         let _user = { ...currentUser };
         _user["perfil"] = datos.permisos == 1 ? "admin" : "trabajador";
         _user["nombre"] = datos.nombre + " " + datos.apellidoPaterno + " " + datos.apellidoMaterno;
+        _user["nombres"] = datos.nombre;
+        _user["primerApellido"] = datos.apellidoPaterno;
+        _user["segundoApellido"] = datos.apellidoMaterno;
+        _user["telefono"] = datos.telefono;
+        _user["email"] = datos.email;
+        _user["direccion"] = datos.direccion;
+        _user["fechaIngreso"] = datos.fechaIngreso;
+        _user["rut"] = datos.rut;
+        _user["permisos"] = datos.permisos;
         console.log(datos);
         setCurrentUser(_user);
         if (currentUser) {
@@ -70,7 +79,7 @@ export const Login = () => {
                     <input
                       type="text"
                       id="rut"
-                      className="form-control form-control-lg"
+                      className="form-control form-control-lg input-form"
                       onChange={(e) => onInputChange(e, "rut")}
                       placeholder="Ej: 12345678-9"
                     />
@@ -82,15 +91,16 @@ export const Login = () => {
                     <input
                       type="password"
                       id="typePasswordX"
-                      className="form-control form-control-lg"
+                      className="form-control form-control-lg input-form"
                       placeholder="*******"
                       onChange={(e) => onInputChange(e, "password")}
                     />
                   </div>
                   <button
-                    className="btn bg-rosa-oscuro btn-lg px-5 c-blanco"
+                    className="btn btn-rosa btn-lg px-5 c-blanco"
                     type="submit"
                     onClick={login}
+
                   >
                     Ingresar
                   </button>
