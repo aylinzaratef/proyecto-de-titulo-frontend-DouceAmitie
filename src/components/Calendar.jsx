@@ -253,7 +253,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       console.log(actualizarData);
 
       let response = await fetch(
-        "http://localhost:8080/Pedidos/actualizarPedido",
+        "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/actualizarPedido",
         {
           method: "PUT",
           headers: {
@@ -290,7 +290,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
 
 
       let response = await fetch(
-        "http://localhost:8080/Pedidos/ingresarPedido",
+        "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/ingresarPedido",
         {
           method: "POST",
           headers: {
@@ -709,6 +709,7 @@ export default class Calendar extends React.PureComponent {
       confirmationVisible: false,
       confirmationVisibleEliminar: false,
       editingFormVisible: false,
+      tooltipVisible: false,
       deletedAppointmentId: undefined,
       editingAppointment: undefined,
       previousAppointment: undefined,
@@ -722,9 +723,8 @@ export default class Calendar extends React.PureComponent {
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
     this.toggleConfirmationVisibleEliminar = this.toggleConfirmationVisibleEliminar.bind(this);
     this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this);
-    this.toggleEditingFormVisibility =
-      this.toggleEditingFormVisibility.bind(this);
-
+    this.toggleEditingFormVisibility = this.toggleEditingFormVisibility.bind(this);
+    this.toggleTooltipVisibility = this.toggleTooltipVisibility.bind(this);
     this.commitChanges = this.commitChanges.bind(this);
     this.onEditingAppointmentChange =
       this.onEditingAppointmentChange.bind(this);
@@ -737,6 +737,7 @@ export default class Calendar extends React.PureComponent {
         addedAppointment,
         isNewAppointment,
         previousAppointment,
+        tooltipVisible
       } = this.state;
 
       const currentAppointment =
@@ -758,6 +759,8 @@ export default class Calendar extends React.PureComponent {
         appointmentData: currentAppointment,
         commitChanges: this.commitChanges,
         visibleChange: this.toggleEditingFormVisibility,
+        visibleTooltip: tooltipVisible,
+        visibleTooltipChange: this.toggleTooltipVisibility,
         onEditingAppointmentChange: this.onEditingAppointmentChange,
         cancelAppointment,
       };
@@ -775,52 +778,83 @@ export default class Calendar extends React.PureComponent {
       appointmentData={appointmentData}
     >
       <h4 className="mt-2 valor-total">${appointmentData.valor_total}</h4>
-      <StyledIconButton
-        /* eslint-disable-next-line no-alert */
-        onClick={() => this.commitChanges({ changed: true }, appointmentData, "Preparando")}
-        className={classes.commandButton}
-        size="large"
-        data-tip data-for="PrepararTooltip"
-      >
-        <LocalDiningIcon />
-        <ReactTooltip id="PrepararTooltip" place="top" type="dark" effect="solid">
-          Comenzar a Preparar
-        </ReactTooltip>
-      </StyledIconButton>
-      <StyledIconButton
-        /* eslint-disable-next-line no-alert */
-        onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisible() }}
-        className={classes.commandButton}
-        size="large"
-        data-tip data-for="CompletarTooltip"
-      >
-        <CheckIcon />
-        <ReactTooltip id="CompletarTooltip" place="top" type="dark" effect="solid">
-          Completar Pedido
-        </ReactTooltip>
-      </StyledIconButton>
-      <StyledIconButton
-        onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisibleEliminar() }}
-        className={classes.commandButton}
-        size="large"
-        data-tip data-for="EliminarTooltip"
-      >
-        <DeleteIcon />
-        <ReactTooltip id="EliminarTooltip" place="top" type="dark" effect="solid">
-          Eliminar Pedido
-        </ReactTooltip>
-      </StyledIconButton>
-      <StyledIconButton
-        onClick={() => { this.toggleEditingFormVisibility(appointmentData) }}
-        className={classes.commandButton}
-        size="large"
-        data-tip data-for="EditarTooltip"
-      >
-        <EditIcon />
-        <ReactTooltip id="EditarTooltip" place="top" type="dark" effect="solid">
-          Editar Pedido
-        </ReactTooltip>
-      </StyledIconButton>
+      {appointmentData.priorityId == "En Transito" ? (
+        <>
+          <StyledIconButton
+            /* eslint-disable-next-line no-alert */
+            onClick={() => this.commitChanges({ changed: true }, appointmentData, "Preparando")}
+            className={classes.commandButton}
+            size="large"
+            data-tip data-for="PrepararTooltip"
+          >
+            <LocalDiningIcon />
+            <ReactTooltip id="PrepararTooltip" place="top" type="dark" effect="solid">
+              Comenzar a Preparar
+            </ReactTooltip>
+          </StyledIconButton>
+          <StyledIconButton
+            onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisibleEliminar() }}
+            className={classes.commandButton}
+            size="large"
+            data-tip data-for="EliminarTooltip"
+          >
+            <DeleteIcon />
+
+          </StyledIconButton>
+          <StyledIconButton
+            onClick={() => { this.toggleEditingFormVisibility(appointmentData) }}
+            className={classes.commandButton}
+            size="large"
+            data-tip data-for="EditarTooltip"
+          >
+            <EditIcon />
+            <ReactTooltip id="EditarTooltip" place="top" type="dark" effect="solid">
+              Editar Pedido
+            </ReactTooltip>
+          </StyledIconButton>
+        </>
+
+      ) : ""}
+      {appointmentData.priorityId == "Preparando" ? (
+        <>
+          <StyledIconButton
+            /* eslint-disable-next-line no-alert */
+            onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisible() }}
+            className={classes.commandButton}
+            size="large"
+            data-tip data-for="CompletarTooltip"
+          >
+            <CheckIcon />
+            <ReactTooltip id="CompletarTooltip" place="top" type="dark" effect="solid">
+              Completar Pedido
+            </ReactTooltip>
+          </StyledIconButton>
+          <StyledIconButton
+            onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisibleEliminar() }}
+            className={classes.commandButton}
+            size="large"
+            data-tip data-for="EliminarTooltip"
+          >
+            <DeleteIcon />
+            <ReactTooltip id="EliminarTooltip" place="top" type="dark" effect="solid">
+              Eliminar Pedido
+            </ReactTooltip>
+          </StyledIconButton>
+          <StyledIconButton
+            onClick={() => { this.toggleEditingFormVisibility(appointmentData) }}
+            className={classes.commandButton}
+            size="large"
+            data-tip data-for="EditarTooltip"
+          >
+            <EditIcon />
+            <ReactTooltip id="EditarTooltip" place="top" type="dark" effect="solid">
+              Editar Pedido
+            </ReactTooltip>
+          </StyledIconButton>
+
+        </>
+      ) : ""}
+
     </StyledAppointmentTooltipHeader>
       <h5 className=" datos-encabezado">Pedido Número:  <b>{appointmentData.id_Pedido}</b></h5>
       <h5 className=" datos-encabezado">Encargado: <b>{appointmentData.datos_encargado.split(",")[1]}</b></h5>
@@ -867,6 +901,14 @@ export default class Calendar extends React.PureComponent {
       editingAppointment: appointment, editingFormVisible: !editingFormVisible, isNewAppointment: false
     });
   }
+  toggleTooltipVisibility() {
+    const { tooltipVisible } = this.state;
+    console.log("soy yo", !tooltipVisible)
+    console.log("abajo crack", this.state)
+    this.setState({
+      tooltipVisible: !tooltipVisible
+    });
+  }
   toggleConfirmationVisibleEliminar() {
     const { confirmationVisibleEliminar } = this.state;
     this.setState({ confirmationVisibleEliminar: !confirmationVisibleEliminar });
@@ -885,6 +927,7 @@ export default class Calendar extends React.PureComponent {
   }
 
   commitChanges({ added, changed, deleted }, saveData = {}, estado = "") {
+
     this.setState((state) => {
       let { data } = state;
       if (added) {
@@ -908,7 +951,7 @@ export default class Calendar extends React.PureComponent {
         actualizarData.valor_total = saveData.valor_total;
         console.log("soy el guardado ", actualizarData);
         fetch(
-          "http://localhost:8080/Pedidos/actualizarPedido",
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/actualizarPedido",
           {
             method: "PUT",
             headers: {
@@ -934,7 +977,7 @@ export default class Calendar extends React.PureComponent {
       }
       if (deleted) {
         fetch(
-          "http://localhost:8080/Pedidos/eliminarPedido/" + saveData.id_Pedido,
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/eliminarPedido/" + saveData.id_Pedido,
           {
             method: "DELETE",
             headers: {
@@ -962,6 +1005,8 @@ export default class Calendar extends React.PureComponent {
       }
       return { data, addedAppointment: {} };
     });
+    console.log("holi")
+    this.toggleTooltipVisibility();
   }
 
   render() {
@@ -970,6 +1015,7 @@ export default class Calendar extends React.PureComponent {
       data,
       confirmationVisible,
       confirmationVisibleEliminar,
+      tooltipVisible,
       editingFormVisible,
       startDayHour,
       endDayHour,
@@ -998,7 +1044,7 @@ export default class Calendar extends React.PureComponent {
             mainResourceName="priorityId"
 
           />
-          <AppointmentTooltip showCloseButton headerComponent={this.Header} />
+          <AppointmentTooltip showCloseButton headerComponent={this.Header} onVisibilityChange={this.toggleTooltipVisibility} visible={tooltipVisible} />
           <Toolbar />
           <DateNavigator />
           <TodayButton />

@@ -117,7 +117,7 @@ export const Book = () => {
         saveData.idReceta = _product.idReceta;
         saveData.id_Pastel = _product.id_Pastel;
         let response = await fetch(
-          "http://localhost:8080/Recetas/actualizarReceta",
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/actualizarReceta",
           {
             method: "PUT",
             headers: {
@@ -135,11 +135,11 @@ export const Book = () => {
         saveDataPastel.precio = pastelSeleccionado.precio;
         saveDataPastel.descripcion = pastelSeleccionado.descripcion;
         saveDataPastel.idPastel = pastelSeleccionado.idPastel;
-        saveDataPastel.nombre = pastelSeleccionado.nombre;
+        saveDataPastel.nombre = _product.nombre;
         console.log(pastelSeleccionado);
 
         let responsePastel = await fetch(
-          "http://localhost:8080/Recetas/actualizarPastel",
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/actualizarPastel",
           {
             method: "PUT",
             headers: {
@@ -180,7 +180,7 @@ export const Book = () => {
 
 
         let response = await fetch(
-          "http://localhost:8080/Recetas/ingresarReceta",
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/ingresarReceta",
           {
             method: "POST",
             headers: {
@@ -230,7 +230,7 @@ export const Book = () => {
   const deleteProduct = () => {
     let _products = products.filter((val) => val.idReceta !== product.idReceta);
     fetch(
-      "http://localhost:8080/Recetas/eliminarReceta/" + product.idReceta,
+      "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/eliminarReceta/" + product.idReceta,
       {
         method: "DELETE",
         headers: {
@@ -245,7 +245,7 @@ export const Book = () => {
     );
 
     fetch(
-      "http://localhost:8080/Recetas/eliminarPastel/" + product.id_Pastel,
+      "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/eliminarPastel/" + product.id_Pastel,
       {
         method: "DELETE",
         headers: {

@@ -218,7 +218,7 @@ export const Landing = () => {
         </div>
       </div>
 
-      <div className="button-demo fixed-bottom">
+      {/* <div className="button-demo fixed-bottom">
         <div className="template">
           <Button
             className="button-demo template youtube p-0"
@@ -229,8 +229,8 @@ export const Landing = () => {
             <span className="px-3">Instagram</span>
           </Button>
         </div>
-      </div>
-      <div className="button-demo fixed-bottom">
+      </div>*/ }
+      {/* <div className="button-demo fixed-bottom">
         <div className="template">
           <Button
             className="vimeo p-0"
@@ -241,7 +241,14 @@ export const Landing = () => {
             <span className="px-3">Haz tu pedido</span>
           </Button>
         </div>
-      </div>
+      </div>*/}
+      <a onClick={redireccionarInstagram} className="btn-insta" >
+        <i className="pi pi-instagram"></i>
+      </a>
+      <a onClick={redireccionarWhatsapp} className="btn-wsp">
+        <i className="pi pi-whatsapp"></i>
+      </a>
+
     </div >
   );
 };

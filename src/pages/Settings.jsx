@@ -24,7 +24,7 @@ export const Settings = () => {
         change.fechaIngreso = currentUser.fechaIngreso;
         if (change.password == newData.confirmPassword && change.password != "") {
             let response = await fetch(
-                "http://localhost:8080/Pasteleros/actualizar",
+                "https://douceamitiequilpuegcp.rj.r.appspot.com/Pasteleros/actualizar",
                 {
                     method: "PUT",
                     headers: {

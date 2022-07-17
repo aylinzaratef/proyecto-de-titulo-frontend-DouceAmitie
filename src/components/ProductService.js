@@ -127,7 +127,6 @@ export class ProductService {
         });
 
         Object.keys(data).forEach(function (key) {
-            console.log(data);
             let newData = {};
             newData.imagen = data[key].imagen;
             newData.nombre = data[key].nombre;
@@ -198,15 +197,9 @@ export class ProductService {
             newData.precio = data[key].precio;
             newData.descripcion = data[key].descripcion;
             pasteles.push(newData); //AGREGA AL ARREGLO
-            console.log(data);
         });
-
         return pasteles; //RETORNA EN VISTA
-
     }
-
-
-
     getLogin = async (rut, password) => {
         let data = await fetch('http://localhost:8080/Login/login', { //OBTIENE INFORMACION DESDE BACK 
             method: "POST",
@@ -281,7 +274,6 @@ export class ProductService {
 
         Object.keys(data).forEach(function (key) {
             let fecha = data[key].fechaGanancia.split("-");
-            console.log("años", anios["2022"]);
             dataMaximaAnio[anios[fecha[0]]] = dataMaximaAnio[anios[fecha[0]]] == undefined ? dataMaximaAnio[anios[fecha[0]]] : dataMaximaAnio[anios[fecha[0]]] + data[key].gananciaDiaria;
             dataMaxima[fecha[0]] = dataMaxima[fecha[0]] != undefined ? dataMaxima[fecha[0]] : [0, 0, 0, 0, 0, 0, 0
                 , 0, 0, 0, 0, 0];
@@ -309,7 +301,6 @@ export class ProductService {
 
         Object.keys(data).forEach(function (key) {
             let fecha = data[key].fechaGasto.split("-");
-            console.log("años", anios["2022"]);
             dataMaximaAnio[anios[fecha[0]]] = dataMaximaAnio[anios[fecha[0]]] == undefined ? dataMaximaAnio[anios[fecha[0]]] : dataMaximaAnio[anios[fecha[0]]] + data[key].gastoDiario;
             dataMaxima[fecha[0]] = dataMaxima[fecha[0]] != undefined ? dataMaxima[fecha[0]] : [0, 0, 0, 0, 0, 0, 0
                 , 0, 0, 0, 0, 0];

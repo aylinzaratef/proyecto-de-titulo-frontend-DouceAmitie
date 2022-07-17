@@ -25,9 +25,7 @@ try {
     if (gastos) {
         datosGastos = gastos.dataMaxima[2022]
         datosGastosAnio = gastos.dataMaximaAnio;
-        console.log(datosGastosAnio)
     }
-    console.log(gastos);
 } catch (err) {
     console.log(err);
 }

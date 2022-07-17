@@ -353,3 +353,57 @@ a:hover {
 .p-link {
     display: inline !important;
 }
+
+.btn-wsp {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    bottom: 30px;
+    right: 30px;
+    background: #0df053;
+    color: #fff;
+    border-radius: 50px;
+    text-align: center;
+    font-weight: 100;
+    font-size: 20px;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    cursor: pointer;
+}
+
+.btn-wsp:hover {
+    width: 250px;
+    height: 80px;
+    font-display: none;
+    color: #0df053;
+    background: #fff;
+
+}
+
+.btn-insta {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    bottom: 115px;
+    right: 30px;
+    background: #c93d82;
+    color: #fff;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 20px;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    cursor: pointer;
+}
+
+.btn-insta:hover {
+    text-decoration: none;
+    color: #c93d82;
+    background: #fff;
+}
+
+.a {
+    display: none;
+}

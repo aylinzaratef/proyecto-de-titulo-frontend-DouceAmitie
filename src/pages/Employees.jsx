@@ -120,7 +120,7 @@ export const Employees = () => {
         saveData.permisos = parseInt(_product.permisos);
 
         let response = await fetch(
-          "http://localhost:8080/Pasteleros/actualizar",
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Pasteleros/actualizar",
           {
             method: "PUT",
             headers: {
@@ -174,7 +174,7 @@ export const Employees = () => {
 
 
         let response = await fetch(
-          "http://localhost:8080/Registro/registrar",
+          "https://douceamitiequilpuegcp.rj.r.appspot.com/Registro/registrar",
           {
             method: "POST",
             headers: {
@@ -231,7 +231,7 @@ export const Employees = () => {
     let _products = products.filter((val) => val.rut !== product.rut);
 
     fetch(
-      "http://localhost:8080/Pasteleros/eliminar/" + product.rut,
+      "https://douceamitiequilpuegcp.rj.r.appspot.com/Pasteleros/eliminar/" + product.rut,
       {
         method: "DELETE",
         headers: {

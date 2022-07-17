@@ -8,7 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { Divider } from "primereact/divider";
 import { classNames } from "primereact/utils";
 import { InputTextarea } from "primereact/inputtextarea";
-
+import ReactTooltip from "react-tooltip";
 export const Box = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [formData, setFormData] = useState({});
@@ -29,7 +29,7 @@ export const Box = () => {
     saveData.fechaGasto = data.date.toISOString().split("T")[0].toString();
     console.log(saveData);
     let response = await fetch(
-      "http://localhost:8080/Estadisticas/ingresarGasto",
+      "https://douceamitiequilpuegcp.rj.r.appspot.com/Estadisticas/ingresarGasto",
       {
         method: "POST",
         headers: {
@@ -113,9 +113,11 @@ export const Box = () => {
                             id="costo"
                             {...input}
                             autoFocus
+                            pattern="[0-9]{0,13}"
                             className={classNames({
                               "p-invalid": isFormFieldValid(meta),
                             })}
+                            data-tip data-for="PrepararTooltip"
                           />
                           <label
                             htmlFor="costo"
@@ -127,9 +129,13 @@ export const Box = () => {
                           </label>
                         </span>
                         {getFormErrorMessage(meta)}
+
                       </div>
                     )}
                   />
+                  <ReactTooltip id="PrepararTooltip" place="top" type="dark" effect="solid">
+                    Ingrese solo caracteres numéricos. (sin <b>"$"</b> ni con <b>puntos</b>)
+                  </ReactTooltip>
                   <Field
                     name="date"
                     render={({ input }) => (

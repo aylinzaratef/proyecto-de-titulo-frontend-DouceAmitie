@@ -13,7 +13,7 @@ export const Login = () => {
     const p = Promise.resolve(productService.getLogin(currentUser.rut, currentUser.password));
     try {
       var datos = await p;
-      if (datos) {
+      if (datos.rut) {
         let _user = { ...currentUser };
         _user["perfil"] = datos.permisos == 1 ? "admin" : "trabajador";
         _user["nombre"] = datos.nombre + " " + datos.apellidoPaterno + " " + datos.apellidoMaterno;
@@ -37,10 +37,17 @@ export const Login = () => {
           }
         }
 
+      } else {
+        let _user = { ...currentUser };
+        _user["status"] = true;
+        setCurrentUser(_user);
       }
 
     } catch (err) {
+      let _user = { ...currentUser };
+      _user["status"] = true;
       console.log(err)
+      setCurrentUser(_user);
     }
 
   }
@@ -72,6 +79,12 @@ export const Login = () => {
                   <p className="c-cholate mb-5">
                     Ingrese sus credenciales de trabajador
                   </p>
+                  {currentUser.status ? (
+                    <div className="alert alert-danger" role="alert">
+                      Rut o contraseña incorrectos.
+                    </div>
+                  ) : ""}
+
                   <label className="form-label" htmlFor="rut">
                     Rut
                   </label>
@@ -82,6 +95,7 @@ export const Login = () => {
                       className="form-control form-control-lg input-form"
                       onChange={(e) => onInputChange(e, "rut")}
                       placeholder="Ej: 12345678-9"
+                      onKeyPress={(e) => { if (e.key == "Enter") { login() } }}
                     />
                   </div>
                   <label className="form-label" htmlFor="typePasswordX">
@@ -94,13 +108,14 @@ export const Login = () => {
                       className="form-control form-control-lg input-form"
                       placeholder="*******"
                       onChange={(e) => onInputChange(e, "password")}
+                      onKeyPress={(e) => { if (e.key == "Enter") { login() } }}
                     />
                   </div>
                   <button
                     className="btn btn-rosa btn-lg px-5 c-blanco"
                     type="submit"
                     onClick={login}
-
+                    disabled={!currentUser.rut || !currentUser.password}
                   >
                     Ingresar
                   </button>
