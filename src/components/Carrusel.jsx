@@ -25,7 +25,7 @@ export const Carrusel = () => {
   const productService = new ProductService();
 
   useEffect(() => {
-    productService.getRecetas().then((data) => setProducts(data.slice(0, 9)));
+    productService.getRecetasCarrusel().then((data) => setProducts(data.slice(0, 9)));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const productTemplate = (product, pastel) => {
@@ -41,7 +41,9 @@ export const Carrusel = () => {
           className="product-image imagen-carrusel"
         />
         <div>
-          <label><i>{product.nombre}</i></label>
+          <label className="mb-3"><b><i>{product.nombre}</i></b></label>
+
+          <p><i>★ {product.descripcion} </i></p>
         </div>
       </div>
 
@@ -57,7 +59,7 @@ export const Carrusel = () => {
         responsiveOptions={responsiveOptions}
         className="custom-carousel"
         circular
-        autoplayInterval={3000}
+        autoplayInterval={5000}
         itemTemplate={productTemplate}
       />
     </div>

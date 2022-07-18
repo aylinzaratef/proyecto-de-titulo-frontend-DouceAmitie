@@ -116,23 +116,29 @@ export default class CalendarTrabajador extends React.PureComponent {
       appointmentData={appointmentData}
     >
       <h6 className=" pedido-trabajador mt-3">Pedido Número:  <b>{appointmentData.id_Pedido}</b></h6>
-      <StyledIconButton
-        /* eslint-disable-next-line no-alert */
-        onClick={() => this.commitChanges({ changed: true }, appointmentData, "Preparando")}
-        className={classes.commandButton}
-        size="large"
-      >
-        <LocalDiningIcon />
-      </StyledIconButton>
-      <StyledIconButton
-        /* eslint-disable-next-line no-alert */
-        onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisible() }}
-        className={classes.commandButton}
-        size="large"
-      >
-        <CheckIcon />
-      </StyledIconButton>
+
+      {appointmentData.priorityId == "En Transito" ? (
+        <StyledIconButton
+          /* eslint-disable-next-line no-alert */
+          onClick={() => this.commitChanges({ changed: true }, appointmentData, "Preparando")}
+          className={classes.commandButton}
+          size="large"
+        >
+          <LocalDiningIcon />
+        </StyledIconButton>
+      ) : ""}
+      {appointmentData.priorityId == "Preparando" ? (
+        <StyledIconButton
+          /* eslint-disable-next-line no-alert */
+          onClick={() => { this.setFinalizarData(appointmentData); this.toggleConfirmationVisible() }}
+          className={classes.commandButton}
+          size="large"
+        >
+          <CheckIcon />
+        </StyledIconButton>
+      ) : ""}
     </StyledAppointmentTooltipHeader>
+      <h5 className=" datos-encabezado"><i className="pi pi-bookmark"></i>  <b>{appointmentData.observaciones_Pedido}</b></h5>
 
     </>
 

@@ -456,10 +456,12 @@ export const Book = () => {
       <MenuBar />
       <div className="datatable-crud-demo container pt-5">
         <Toast ref={toast} />
-
-        <div className="card">
+        <div className="card card-transparente">
           <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
-
+          <img
+            src={`images/logo.png`}
+            className="img-calendario d-none d-lg-block d-xl-block"
+          />
           <DataTable
             ref={dt}
             value={products}
@@ -474,6 +476,7 @@ export const Book = () => {
             globalFilterFields={['nombre', 'categoria']}
             header={header}
             responsiveLayout="scroll"
+            className={"card-transparente-imp"}
           >
             <Column
               field="image"
@@ -906,46 +909,49 @@ export const Book = () => {
             width: "85%",
             height: "150%"
           }}
-          header="Receta"
+          header={product.nombre}
           modal
           className="p-fluid"
           onHide={hideViewDialog}
         >
-          {product.imagen && (
+          <div className="row">
+            <div className="col-12 col-lg-3 col-xl-3">
+              {product.imagen && (
+                <div className="text-left">
+                  <img
+                    src={`${product.imagen}`}
+                    onError={(e) =>
+                    (e.target.src =
+                      '/public/images/errorfoto.png')
+                    }
+                    alt={product.imagen}
+                    className="product-image block m-auto pb-3 imagen-vista"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="col-12 col-lg-9 col-xl-9">
+              <div className="field mt-3">
+                <label className="mb-2"><b>Tipo: </b></label>
+                <label className="mx-2">{product.categoria}</label>
+              </div>
+              <div className="field mt-3">
+                <label htmlFor="description"><b>Ingredientes:</b></label>
+                <p>{product.ingredientes}</p>
+              </div>
+              <div className="field mt-3">
+                <label htmlFor="description"><b>Preparación:</b></label>
+                <p>{product.preparacion}</p>
+              </div>
 
-            <div className="text-center">
-              <img
-                src={`${product.imagen}`}
-                onError={(e) =>
-                (e.target.src =
-                  '/public/images/errorfoto.png')
-                }
-                alt={product.imagen}
-                className="product-image block m-auto pb-3 imagen-vista"
-              />
             </div>
 
+          </div>
 
-          )}
-          <div className="field">
-            <label htmlFor="name"><b>Nombre</b></label>
-            <p>{product.nombre}</p>
-          </div>
-          <div className="field mt-3">
-            <label htmlFor="description"><b>Ingredientes</b></label>
-            <p>{product.ingredientes}</p>
-          </div>
-          <div className="field mt-3">
-            <label htmlFor="description"><b>Preparación</b></label>
-            <p>{product.preparacion}</p>
-          </div>
-          <div className="field mt-3">
-            <label className="mb-3"><b>Tipo </b></label>
-            <label className="mx-2">{product.categoria}</label>
-          </div>
+
           <div className="container" align="center">
             <div className="field mt-3">
-              <label className="mb-3"> <b></b></label>
+              <label className="mb-3"> <b>Video Explicativo</b></label>
               <Video url={product.video} />
             </div>
           </div>

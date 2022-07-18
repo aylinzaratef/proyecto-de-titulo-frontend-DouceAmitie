@@ -74,6 +74,10 @@ export const Settings = () => {
         <div>
             <MenuBar />
             <div className="container-fluid mt-5">
+                <img
+                    src={`images/logo.png`}
+                    className="img-calendario d-none d-lg-block d-xl-block"
+                />
                 <Toast ref={toast} />
                 <Toast ref={toastError} />
                 <div className="row">

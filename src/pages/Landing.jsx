@@ -97,7 +97,15 @@ export const Landing = () => {
           </div>
         </div>
       </nav >
-      <section className="page-section portfolio banner-landing" id="">
+      <section className="page-section portfolio banner-landing d-none d-lg-block d-xl-block" id="">
+        <div className="container-fluid">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-12 col-lg-12 col-xl-12">
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="page-section portfolio banner-landing-mobil d-block d-lg-none d-xl-none" id="">
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-md-12 col-lg-12 col-xl-12">
@@ -135,12 +143,14 @@ export const Landing = () => {
           <div className="row">
             <div className="col-lg-4 ms-auto">
               <p className="lead">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                Somos 2 aficionadas a la pasteleria llamadas <i>Kathalina y Angelica.</i> Somos las nuevas dueñas de Douce Amitié, esta pasteleria que por muchos años alegró a la comunidad de las rosas en Quilpué. Nos fascina realizar sus pedidos, tenemos 5 años de experiencia preparando todo tipo de pasteles y tortas. Ambas quisimos dar este enorme paso de digitalizarnos, esperemos que les guste nuestra web y que les guste la forma en la que trabajamos.
+                <br /> <b>¡Esperamos con muchas ansias sus hermosos pedidos!</b>
               </p>
             </div>
             <div className="col-lg-4 me-auto">
               <p className="lead">
-                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                Nos especializamos en la preparacion y decoración de tortas de todo tipo, pero no nos quedamos ahí, también realizamos pasteles mas pequeños con cualquier petición de personalización que se desee.
+                Nuestra misión es prepara con mucho amor todos los pedidos que nos soliciten nuestros clientes, siempre estamos atentas a cualquier detallito que se solicite para agregar a algún pastel, torta o incluso a la hora de entregarlo. Si tienes alguna solicitud especial, ¡por más loca o tonta que parezca no dudes en avisarnos!, nosotras seremos cómplices en tus locuras!
               </p>
             </div>
           </div>
@@ -212,11 +222,7 @@ export const Landing = () => {
           </div>
         </div>
       </footer>
-      <div className="copyright py-4 text-center c-chocolate bg-white">
-        <div className="container">
-          <small>Copyright &copy; Your Website 2022</small>
-        </div>
-      </div>
+
 
       {/* <div className="button-demo fixed-bottom">
         <div className="template">
@@ -245,10 +251,23 @@ export const Landing = () => {
       <a onClick={redireccionarInstagram} className="btn-insta" >
         <i className="pi pi-instagram"></i>
       </a>
-      <a onClick={redireccionarWhatsapp} className="btn-wsp">
-        <i className="pi pi-whatsapp"></i>
+      <a onClick={redireccionarWhatsapp} className="btn-wsp"
+        onMouseLeave={(e) => {
+          let span = e.target.querySelector("span");
+          if (span) {
+            span.classList.remove("show")
+          }
+        }}
+        onMouseOver={(e) => {
+          let span = e.target.querySelector(".text");
+          if (span) {
+            span.classList.add("show")
+          }
+        }}
+      >
+        <i className="pi pi-whatsapp"> </i>
+        <span className="text"><b> ¡Haz tu pedido!</b></span>
       </a>
-
     </div >
   );
 };

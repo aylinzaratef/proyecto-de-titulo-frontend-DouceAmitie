@@ -175,7 +175,7 @@ export const BarChart2 = () => {
                 </div>
 
             </div>
-            <div className="card mt-3 mx-5">
+            <div className="card mt-3 mx-5 card-transparente">
                 <Chart type="bar" data={basicData} options={horizontalOptions} />
             </div>
         </div>

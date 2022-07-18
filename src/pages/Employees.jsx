@@ -11,7 +11,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { MenuBar } from "../components/MenuBar";
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-
+import ReactTooltip from "react-tooltip";
 export const Employees = () => {
   let emptyProduct = {
     rut: null,
@@ -21,6 +21,8 @@ export const Employees = () => {
     telefono: "",
     email: null,
     direccion: null,
+    rutValido: true,
+    emailValido: true
   };
 
   const [products, setProducts] = useState(null);
@@ -69,6 +71,57 @@ export const Employees = () => {
       'verified': { value: null, matchMode: FilterMatchMode.EQUALS }
     });
     setGlobalFilterValue('');
+  }
+
+
+  const validarRut = (e) => {
+    const val = (e.target && e.target.value) || "";
+    let _trabajador = { ...product };
+    if (fnRut.validaRut(e.target.value)) {
+      _trabajador["rutValido"] = true;
+
+    } else {
+      _trabajador["rutValido"] = false;
+    }
+    _trabajador["rut"] = val;
+    console.log("holaaaaaaaaaaaaaaa", _trabajador);
+    setProduct(_trabajador);
+  }
+
+  const fnRut = {
+    // Valida el rut con su cadena completa "XXXXXXXX-X"
+    validaRut: function (rutCompleto) {
+      rutCompleto = rutCompleto.replace("‐", "-");
+      if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rutCompleto))
+        return false;
+      var tmp = rutCompleto.split('-');
+      var digv = tmp[1];
+      var rut = tmp[0];
+      if (digv == 'K') digv = 'k';
+
+      return (fnRut.dv(rut) == digv);
+    },
+    dv: function (T) {
+      var M = 0, S = 1;
+      for (; T; T = Math.floor(T / 10))
+        S = (S + T % 10 * (9 - M++ % 6)) % 11;
+      return S ? S - 1 : 'k';
+    }
+  }
+
+
+  const validarEmail = (e) => {
+    const val = (e.target && e.target.value) || "";
+    let _trabajador = { ...product };
+    let re = /^([\da-z_.-]+)@([\da-z.-]+).([a-z.]{2,6})$/
+    if (re.exec(e.target.value)) {
+      _trabajador["emailValido"] = true;
+
+    } else {
+      _trabajador["emailValido"] = false;
+    }
+    _trabajador["email"] = val;
+    setProduct(_trabajador);
   }
 
 
@@ -171,10 +224,10 @@ export const Employees = () => {
         saveData.fechaIngreso = fechaIngreso;
         saveData.permisos = parseInt(_product.cargo);
 
-
+        console.log(saveData);
 
         let response = await fetch(
-          "https://douceamitiequilpuegcp.rj.r.appspot.com/Registro/registrar",
+          "http://localhost:8080/Registro/registrar",
           {
             method: "POST",
             headers: {
@@ -188,7 +241,7 @@ export const Employees = () => {
         );
 
         var newResponse = await response.text();
-
+        console.log(newResponse);
         if (_product.cargo == "1") {
           _product.cargo = "Administrador";
         } else {
@@ -295,10 +348,11 @@ export const Employees = () => {
   };
 
   const onInputChange = (e, name) => {
+
     const val = (e.target && e.target.value) || "";
     let _product = { ...product };
     _product[`${name}`] = val;
-
+    console.log(_product);
     setProduct(_product);
   };
 
@@ -402,7 +456,10 @@ export const Employees = () => {
 
         <div className="card">
           <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
-
+          <img
+            src={`images/logo.png`}
+            className="img-calendario d-none d-lg-block d-xl-block"
+          />
           <DataTable
             ref={dt}
             value={products}
@@ -417,6 +474,7 @@ export const Employees = () => {
             globalFilterFields={['rut', 'nombre', 'cargo', 'direccion']}
             header={header}
             responsiveLayout="scroll"
+            className={"card-transparente-imp"}
           >
             <Column
               field="rut"
@@ -491,8 +549,8 @@ export const Employees = () => {
         <Dialog
           visible={productDialog}
           style={{
-            width: "85%",
-            height: "150%"
+
+
           }}
           header="Nuevo Trabajador"
           modal
@@ -505,14 +563,23 @@ export const Employees = () => {
             <InputText
               id="rut"
               value={product.rut}
-              onChange={(e) => onInputChange(e, "rut")}
+              onChange={(e) => { onInputChange(e, "rut"); validarRut(e) }}
               required
               autoFocus
+              data-tip data-for="RutTooltip"
               className={classNames({ "p-invalid": submitted && !product.rut })}
             />
+            {!product.rutValido ? (
+              <p className="c-rojo">El rut ingresado no es válido, por favor ingrese otro. </p>
+            ) : ""}
+
             {submitted && !product.rut && (
               <small className="p-error">Rut es requerido.</small>
             )}
+            <ReactTooltip id="RutTooltip" place="top" type="info" effect="solid">
+
+              Ingrese Rut con digito verificador, <b>sin</b> puntos y <b>con</b> guión.
+            </ReactTooltip>
           </div>
           <div className="field mt-3">
             <label htmlFor="nombre">Nombre</label>
@@ -621,12 +688,15 @@ export const Employees = () => {
             <InputText
               id="email"
               value={product.email}
-              onChange={(e) => onInputChange(e, "email")}
+              onChange={(e) => { onInputChange(e, "email"); validarEmail(e) }}
               required
               className={classNames({
                 "p-invalid": submitted && !product.email,
               })}
             />
+            {!product.emailValido ? (
+              <p className="c-rojo">El email ingresado no es válido, por favor ingrese otro. </p>
+            ) : ""}
             {submitted && !product.email && (
               <small className="p-error">E-mail es requerido.</small>
             )}

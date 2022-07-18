@@ -25,7 +25,7 @@ export const Testimonial = () => {
     const productService = new ProductService();
 
     useEffect(() => {
-        productService.getProducts().then((data) => setProducts(data.slice(0, 9)));
+        productService.getTestimonios().then((data) => setProducts(data.slice(0, 9)));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const productTemplate = (client) => {
@@ -34,18 +34,19 @@ export const Testimonial = () => {
                 <div class="testimonial-quote-wrap">
                     <div class="media author-info mb-3">
                         <div class="author-img mr-3">
-                            <img src="images/reseñas/anamaria.jpg" alt="client" class="img-fluid" />
+                            <img src={client.image} alt="client" class="img-fluid" />
                         </div>
                         <div class="media-body text-white">
-                            <h5 class="mb-0 text-white mt-4">Ana Maria</h5>
+                            <h5 class="mb-0 text-white mt-4">{client.nombre}</h5>
                         </div>
                         <i class="fas fa-quote-right text-white"></i>
                     </div>
                     <div class="client-say text-white pt-5">
-                        <p>"Me encanta la forma en la que trabajan, desde el momento en que agendo una cita son muy amables y son muy flexibles en el precio. Muy buenos trabajadores y muy confiables a la hora de acerlos entrar a mi casa. Excelente servicio! :)"</p>
+                        <p>{client.comentario}</p>
                     </div>
                 </div>
             </div>
+
         );
     };
 
@@ -60,7 +61,7 @@ export const Testimonial = () => {
                         responsiveOptions={responsiveOptions}
                         className="custom-carousel"
                         circular
-                        autoplayInterval={2000}
+                        autoplayInterval={5000}
                         itemTemplate={productTemplate}
                     />
                 </div>

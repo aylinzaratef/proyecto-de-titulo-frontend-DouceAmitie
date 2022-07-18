@@ -292,7 +292,8 @@ a:hover {
 }
 
 .imagen-vista {
-    width: 30%;
+    width: 20rem;
+    height: 20rem;
 
 }
 
@@ -315,7 +316,16 @@ a:hover {
 .banner-landing {
     background-image: url(/public/images/banner.png) !important;
     height: 320px;
-    width: 120rem;
+    width: 100% !important;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.banner-landing-mobil {
+    background-image: url(/public/images/minibanner.png) !important;
+    height: 320px;
+    width: 100%;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -352,6 +362,7 @@ a:hover {
 
 .p-link {
     display: inline !important;
+    text-align: center !important;
 }
 
 .btn-wsp {
@@ -372,12 +383,28 @@ a:hover {
     cursor: pointer;
 }
 
+.btn-wsp .show {
+    display: inline !important;
+
+}
+
+.btn-wsp span {
+    display: none !important;
+    position: relative;
+    top: -0.1rem;
+}
+
+.btn-wsp i {
+    font-size: 1.5rem;
+}
+
 .btn-wsp:hover {
+    text-decoration: none;
     width: 250px;
     height: 80px;
     font-display: none;
-    color: #0df053;
-    background: #fff;
+    color: #fff !important;
+    background: #0df053;
 
 }
 
@@ -398,12 +425,32 @@ a:hover {
     cursor: pointer;
 }
 
+.btn-insta i {
+    font-size: 1.5rem;
+}
+
+
 .btn-insta:hover {
     text-decoration: none;
-    color: #c93d82;
+    color: #c93d82 !important;
     background: #fff;
 }
 
-.a {
-    display: none;
+.c-rojo {
+    color: red;
+    font-size: 90%;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.card-transparente {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.card-transparente-imp *:not(button):not(.place-top) {
+    background: transparent !important;
+    background-color: transparent !important;
 }

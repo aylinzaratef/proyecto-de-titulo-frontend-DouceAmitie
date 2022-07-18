@@ -10,7 +10,7 @@ import { InputText } from "primereact/inputtext";
 import { MenuBar } from "../components/MenuBar";
 import { Video } from "../components/VideoPlayer";
 import ReactTooltip from "react-tooltip";
-
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 export const BookTrabajador = () => {
   let emptyProduct = {
     id: null,
@@ -33,10 +33,39 @@ export const BookTrabajador = () => {
   const toast = useRef(null);
   const dt = useRef(null);
   const productService = new ProductService();
-
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const [filters, setFilters] = useState(null);
   useEffect(() => {
     productService.getRecetas().then((data) => setProducts(data));
+    initFilters();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const clearFilter = () => {
+    initFilters();
+  }
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+    _filters['global'].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  }
+
+  const initFilters = () => {
+    setFilters({
+      'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+      'nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'categoria': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+      'activity': { value: null, matchMode: FilterMatchMode.BETWEEN },
+      'verified': { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
+    setGlobalFilterValue('');
+  }
+
+
+
 
   const openNew = () => {
     setProduct(emptyProduct);
@@ -94,7 +123,7 @@ export const BookTrabajador = () => {
         <i className="pi pi-search" />
         <InputText
           type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          onChange={onGlobalFilterChange}
           placeholder="Búsqueda"
           className="input-form"
         />
@@ -109,6 +138,10 @@ export const BookTrabajador = () => {
         <Toast ref={toast} />
 
         <div className="card">
+          <img
+            src={`images/logo.png`}
+            className="img-calendario d-none d-lg-block d-xl-block"
+          />
           <DataTable
             ref={dt}
             value={products}
@@ -119,9 +152,11 @@ export const BookTrabajador = () => {
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-            globalFilter={globalFilter}
+            filters={filters}
+            globalFilterFields={['nombre', 'categoria']}
             header={header}
             responsiveLayout="scroll"
+            className={"card-transparente-imp"}
           >
             <Column
               field="image"
@@ -153,51 +188,58 @@ export const BookTrabajador = () => {
 
         <Dialog
           visible={viewDialog}
-          style={{ width: "60%" }}
-          header="Receta"
+          style={{
+            width: "85%",
+            height: "150%"
+          }}
+          header={product.nombre}
           modal
           className="p-fluid"
           onHide={hideViewDialog}
         >
-          {product.imagen && (
+          <div className="row">
+            <div className="col-12 col-lg-3 col-xl-3">
+              {product.imagen && (
+                <div className="text-left">
+                  <img
+                    src={`${product.imagen}`}
+                    onError={(e) =>
+                    (e.target.src =
+                      '/public/images/errorfoto.png')
+                    }
+                    alt={product.imagen}
+                    className="product-image block m-auto pb-3 imagen-vista"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="col-12 col-lg-9 col-xl-9">
+              <div className="field mt-3">
+                <label className="mb-2"><b>Tipo: </b></label>
+                <label className="mx-2">{product.categoria}</label>
+              </div>
+              <div className="field mt-3">
+                <label htmlFor="description"><b>Ingredientes:</b></label>
+                <p>{product.ingredientes}</p>
+              </div>
+              <div className="field mt-3">
+                <label htmlFor="description"><b>Preparación:</b></label>
+                <p>{product.preparacion}</p>
+              </div>
 
-            <div className="text-center">
-              <img
-                src={`${product.imagen}`}
-                onError={(e) =>
-                (e.target.src =
-                  '/public/images/errorfoto.png')
-                }
-                alt={product.imagen}
-                className="product-image block m-auto pb-3 imagen-vista"
-              />
             </div>
 
+          </div>
 
-          )}
-          <div className="field">
-            <label htmlFor="name"><b>Nombre</b></label>
-            <p>{product.nombre}</p>
-          </div>
-          <div className="field mt-3">
-            <label htmlFor="description"><b>Ingredientes</b></label>
-            <p>{product.ingredientes}</p>
-          </div>
-          <div className="field mt-3">
-            <label htmlFor="description"><b>Preparación</b></label>
-            <p>{product.preparacion}</p>
-          </div>
-          <div className="field mt-3">
-            <label className="mb-3"><b>Tipo </b></label>
-            <label className="mx-2">{product.categoria}</label>
-          </div>
+
           <div className="container" align="center">
             <div className="field mt-3">
-              <label className="mb-3"> Video Explicativo</label>
+              <label className="mb-3"> <b>Video Explicativo</b></label>
               <Video url={product.video} />
             </div>
           </div>
         </Dialog>
+
       </div>
     </div>
   );

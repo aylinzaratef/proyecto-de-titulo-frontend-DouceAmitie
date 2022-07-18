@@ -18,7 +18,7 @@ export class ProductService {
         return fetch('data/products-small.json').then(res => res.json()).then(d => d.data);
     }
 
-    getProducts() {
+    getTestimonios() {
         return fetch('data/products.json').then(res => res.json()).then(d => d.data);
     }
 
@@ -80,6 +80,7 @@ export class ProductService {
             return data.json();
         });
         Object.keys(data).forEach(function (key) {
+
             let newData = {};
             newData.startDate = data[key].fecha_Entrega;
             let endDate = data[key].fecha_Entrega.split("T");
@@ -87,6 +88,9 @@ export class ProductService {
             let horas = endDate[1].split(":");
             let hora = parseInt(horas[0]) + 1 //AQUI SE SUMAN LAS HORAS PARA HACER MAS GRANDE EL CUADRADITO
             newData.endDate = fecha + hora + ":" + horas[1] + ":" + horas[2];
+            for (let index = 0; index < data[key].pasteles.length; index++) {
+                data[key].nombresPasteles[index] = data[key].nombresPasteles[index] + "(x" + data[key].pasteles[index].cantidad + ")";
+            }
             newData.title = data[key].nombresPasteles.join(", ");
             newData.priorityId = data[key].estado;
             newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
@@ -99,16 +103,9 @@ export class ProductService {
             newData.valor_total = data[key].valor_total;
             newData.pasteles = data[key].pasteles;
             newData.direccion_Entrega = data[key].direccion_Entrega;
-
-
             pedidos.push(newData);
-
-
         });
-
-
         return pedidos;
-
     }
 
 
@@ -137,13 +134,61 @@ export class ProductService {
             newData.id_Pastel = data[key].id_Pastel;
             newData.descripcion = data[key].descripcion;
             newData.idReceta = data[key].idReceta;
-
+            console.log(data);
             recetas.push(newData);
         });
 
         return recetas;
 
     }
+
+
+    getRecetasCarrusel = async () => {
+        var recetas = []; //OBJETO
+        let data = await fetch('http://localhost:8080/Recetas/getRecetas', {
+
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Request-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "origin-list"
+            }
+        }).then(data => {
+            return data.json();
+        });
+        let pasteles = await fetch('http://localhost:8080/Recetas/getPasteles', {
+
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Request-With": "XMLHttpRequest",
+                "Access-Control-Allow-Origin": "origin-list"
+            }
+        }).then(data => {
+            return data.json();
+        });
+        console.log("pasteles", pasteles);
+        Object.keys(data).forEach(function (key) {
+            let newData = {};
+
+            newData.imagen = data[key].imagen;
+            newData.nombre = data[key].nombre;
+            newData.categoria = data[key].categoria;
+            newData.ingredientes = data[key].ingredientes;
+            newData.preparacion = data[key].preparacion;
+            newData.video = data[key].urlVideo;
+            newData.id_Pastel = data[key].id_Pastel;
+            newData.descripcion = pasteles[key].descripcion;
+            newData.idReceta = data[key].idReceta;
+            recetas.push(newData);
+        });
+        console.log(recetas);
+        return recetas;
+
+    }
+
 
     getClientes = async () => {
 
@@ -241,9 +286,14 @@ export class ProductService {
             let horas = endDate[1].split(":");
             let hora = parseInt(horas[0]) + 1 //AQUI SE SUMAN LAS HORAS PARA HACER MAS GRANDE EL CUADRADITO
             newData.endDate = fecha + hora + ":" + horas[1] + ":" + horas[2];
+            for (let index = 0; index < data[key].pasteles.length; index++) {
+                data[key].nombresPasteles[index] = data[key].nombresPasteles[index] + "(x" + data[key].pasteles[index].cantidad + ")";
+            }
             newData.title = data[key].nombresPasteles.join(", ");
             newData.priorityId = data[key].estado;
             newData.rutTrabajador = data[key].datos_encargado.split(",")[0];
+            newData.observaciones_Pedido = data[key].observaciones_Pedido;
+
 
             pedidos.push(newData);
 
