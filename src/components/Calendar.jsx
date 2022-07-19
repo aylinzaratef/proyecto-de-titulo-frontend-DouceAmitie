@@ -186,6 +186,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       pastelID: 0,
       cantidadID: 0,
       dataPasteles: [],
+      validado: false,
       listaclientes: clienteslist
     };
 
@@ -210,6 +211,20 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     this.setState({
       appointmentChanges: nextChanges,
     });
+  }
+
+  validateForm() {
+    const appointment = {
+      ...this.getAppointmentData(),
+      ...this.getAppointmentChanges(),
+    };
+    if (this.state.dataPasteles.length > 0 && appointment.cliente && appointment.location && appointment.trabajador) {
+      this.commitAppointment("add")
+    } else {
+      this.setState({
+        validado: true
+      })
+    }
   }
 
   async commitAppointment(type, editAppointment = {}) {
@@ -286,9 +301,6 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       saveData.datos_encargado = appointment.trabajador;
       saveData.pasteles = this.state.dataPasteles;
 
-      console.log("soy el nuevo pedido", saveData);
-
-
       let response = await fetch(
         "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/ingresarPedido",
         {
@@ -328,7 +340,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       target,
       onHide,
     } = this.props;
-    const { appointmentChanges, pastelList, clienteID, trabajadorID, pastelID, cantidadID, dataPasteles, listaclientes } = this.state;
+    const { appointmentChanges, pastelList, clienteID, trabajadorID, pastelID, cantidadID, dataPasteles, listaclientes, validado } = this.state;
 
     const displayAppointmentData = {
       ...appointmentData,
@@ -336,9 +348,8 @@ class AppointmentFormContainerBasic extends React.PureComponent {
     };
 
     const isNewAppointment = appointmentData.id_Pedido === undefined;
-    console.log("soy el 289", appointmentData)
     const applyChanges = isNewAppointment
-      ? () => this.commitAppointment("added")
+      ? () => this.validateForm()
       : () => this.commitAppointment("changed");
 
     const selectEditorProps = (field) => ({
@@ -661,13 +672,22 @@ class AppointmentFormContainerBasic extends React.PureComponent {
               type="button"
               className="btn btn-primary btn-rosa"
               onClick={() => {
-                visibleChange();
+
                 applyChanges();
               }}
             >
               {isNewAppointment ? "+ Ingresar Pedido" : "Actualizar Pedido"}
             </button>
           </div>
+          {this.state.validado ? (
+            <div className="row p-5">
+              <div className="alert alert-danger" role="alert">
+                Debe rellenar todos los campos. En caso de que no haya alguna observación, ingresar un guión (-).
+              </div>
+            </div>
+          ) : ""}
+
+
         </StyledDiv>
       </AppointmentForm.Overlay>
     );

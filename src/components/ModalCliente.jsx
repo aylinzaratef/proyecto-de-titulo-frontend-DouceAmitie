@@ -19,6 +19,7 @@ const style = {
 
 export const ModalCliente = ({ setList }) => {
   const [open, setOpen] = React.useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [cliente, setCliente] = useState({ rutValido: true, emailValido: true });
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -79,23 +80,32 @@ export const ModalCliente = ({ setList }) => {
 
 
   const saveCliente = async () => {
-    var saveData = {};
-    let response = await fetch("http://localhost:8080/Pedidos/registrarCliente", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "X-Request-With": "XMLHttpRequest",
-        "Access-Control-Allow-Origin": "origin-list"
-      },
+    setSubmitted(true);
+    if (cliente.telefono && cliente.nombre && cliente.rut && cliente.apellidoPaterno && cliente.apellidoMaterno && cliente.email) {
+      var saveData = {};
+      cliente.telefono = "+569" + cliente.telefono;
+      let response = await fetch("http://localhost:8080/Pedidos/registrarCliente", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Request-With": "XMLHttpRequest",
+          "Access-Control-Allow-Origin": "origin-list"
+        },
 
-      body: JSON.stringify(cliente),
-    })
+        body: JSON.stringify(cliente),
+      })
 
-    var newResponse = await response.text();
-    cliente.nombre = cliente.nombre + " " + cliente.apellidoPaterno + " " + cliente.apellidoMaterno
-    setList(cliente);
-    setOpen(false);
+      var newResponse = await response.text();
+      cliente.nombre = cliente.nombre + " " + cliente.apellidoPaterno + " " + cliente.apellidoMaterno
+
+      setList(cliente);
+      setOpen(false);
+      setCliente({ rutValido: true, emailValido: true });
+      setSubmitted(false);
+    }
+
+
   }
   return (
     <div>
@@ -137,6 +147,10 @@ export const ModalCliente = ({ setList }) => {
                   <p className="c-rojo">El rut ingresado no es válido, por favor ingrese otro. </p>
                 ) : ""}
 
+                {submitted && !cliente.rut && (
+                  <small className="p-error">Rut es requerido.</small>
+                )}
+
                 <ReactTooltip id="RutTooltip" place="top" type="info" effect="solid">
 
                   Ingrese Rut con digito verificador, <b>sin</b> puntos y <b>con</b> guión.
@@ -153,6 +167,9 @@ export const ModalCliente = ({ setList }) => {
                   onChange={(e) => datosClientes(e, "nombre")}
                   required
                 />
+                {submitted && !cliente.nombre && (
+                  <small className="p-error">Nombre es requerido.</small>
+                )}
               </div>
               <div className="col-12 mt-3">
                 <TextField
@@ -164,6 +181,9 @@ export const ModalCliente = ({ setList }) => {
                   onChange={(e) => datosClientes(e, "apellidoPaterno")}
                   required
                 />
+                {submitted && !cliente.apellidoPaterno && (
+                  <small className="p-error">Primer apellido es requerido.</small>
+                )}
               </div>
               <div className="col-12 mt-3">
                 <TextField
@@ -175,18 +195,30 @@ export const ModalCliente = ({ setList }) => {
                   onChange={(e) => datosClientes(e, "apellidoMaterno")}
                   required
                 />
+                {submitted && !cliente.apellidoMaterno && (
+                  <small className="p-error">Segundo Apellido es requerido.</small>
+                )}
               </div>
-              <div className="col-12 mt-3">
-                <TextField
-                  id="cliente-telefono"
-                  label="Teléfono"
-                  variant="outlined"
-                  fullWidth
-                  placeholder="+56900000000"
-                  onChange={(e) => datosClientes(e, "telefono")}
-                  required
-                />
+              <div className="row p-0">
+                <label className="col-2 label-telefono">+569</label>
+                <div className="col-10 mt-3">
+                  <TextField
+                    id="cliente-telefono"
+                    label="Teléfono"
+                    variant="outlined"
+                    fullWidth
+                    placeholder="99999999"
+                    onChange={(e) => datosClientes(e, "telefono")}
+                    required
+                  />
+                  {submitted && !cliente.telefono && (
+                    <small className="p-error">
+                      Número de teléfono es requerido.
+                    </small>
+                  )}
+                </div>
               </div>
+
               <div className="col-12 mt-3">
                 <TextField
                   type="email"
@@ -201,6 +233,9 @@ export const ModalCliente = ({ setList }) => {
                 {!cliente.emailValido ? (
                   <p className="c-rojo">El email ingresado no es válido, por favor ingrese otro. </p>
                 ) : ""}
+                {submitted && !cliente.email && (
+                  <small className="p-error">E-mail es requerido.</small>
+                )}
               </div>
             </div>
             <div className="row d-flex pt-2 justify-content-center">
@@ -215,6 +250,6 @@ export const ModalCliente = ({ setList }) => {
           </div>
         </Box>
       </Modal>
-    </div>
+    </div >
   );
 };

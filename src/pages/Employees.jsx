@@ -166,7 +166,7 @@ export const Employees = () => {
         } else {
           saveData.password = _product.password;
         }
-        saveData.telefono = _product.telefono;
+        saveData.telefono = "+569" + _product.telefono;
         saveData.email = _product.email;
         saveData.direccion = _product.direccion;
         saveData.fechaIngreso = fechaIngreso;
@@ -623,7 +623,7 @@ export const Employees = () => {
               })}
             />
             {submitted && !product.apellidoMaterno && (
-              <small className="p-error">Nombre es requerido.</small>
+              <small className="p-error">Segundo Apellido es requerido.</small>
             )}
           </div>
           <div className="field mt-3">
@@ -668,20 +668,27 @@ export const Employees = () => {
           </div>
           <div className="field mt-3">
             <label htmlFor="telefono">Teléfono</label>
-            <InputText
-              id="telefono"
-              value={product.telefono}
-              onChange={(e) => onInputChange(e, "telefono")}
-              required
-              className={classNames({
-                "p-invalid": submitted && !product.telefono,
-              })}
-            />
-            {submitted && !product.telefono && (
-              <small className="p-error">
-                Número de teléfono es requerido.
-              </small>
-            )}
+            <div className="row">
+              <div className="col-2">
+                <label className="mt-2 px-3">+569</label>
+              </div>
+              <div className="col-10">
+                <InputText
+                  id="telefono"
+                  value={product.telefono}
+                  onChange={(e) => onInputChange(e, "telefono")}
+                  required
+                  className={classNames({
+                    "p-invalid": submitted && !product.telefono,
+                  })}
+                />
+                {submitted && !product.telefono && (
+                  <small className="p-error">
+                    Número de teléfono es requerido.
+                  </small>
+                )}
+              </div>
+            </div>
           </div>
           <div className="field mt-3">
             <label htmlFor="email">E-mail</label>
@@ -720,10 +727,7 @@ export const Employees = () => {
         {/*EDITAR TRABAJADOR   */}
         <Dialog
           visible={editDialog}
-          style={{
-            width: "85%",
-            height: "150%"
-          }}
+
           header="Editar Trabajador"
           modal
           className="p-fluid"

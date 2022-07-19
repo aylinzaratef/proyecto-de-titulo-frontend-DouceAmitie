@@ -71,8 +71,12 @@ export const Box = () => {
 
   return (
     <div>
+      <img
+        src={`images/logo.png`}
+        className="img-calendario d-none d-lg-block d-xl-block"
+      />
       <MenuBar />
-      <div className="form-demo card container col-12 col-lg-6 col-xl-6 mt-5">
+      <div className="form-demo card container col-12 col-lg-6 col-xl-6 mt-5 card-transparente"  >
         <Dialog
           visible={showMessage}
           onHide={() => setShowMessage(false)}

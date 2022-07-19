@@ -222,13 +222,8 @@ export const FAQ = () => {
           </div>
         </div>
       </footer>
-      <div className="copyright py-4 text-center c-chocolate bg-white">
-        <div className="container">
-          <small>Copyright &copy; CA Development 2022</small>
-        </div>
-      </div>
 
-      <div className="button-demo fixed-bottom">
+      {/* <div className="button-demo fixed-bottom">
         <div className="template">
           <Button
             className="button-demo template youtube p-0"
@@ -251,7 +246,28 @@ export const FAQ = () => {
             <span className="px-3">Haz tu pedido</span>
           </Button>
         </div>
-      </div>
+      </div> */}
+
+      <a onClick={redireccionarInstagram} className="btn-insta" >
+        <i className="pi pi-instagram"></i>
+      </a>
+      <a onClick={redireccionarWhatsapp} className="btn-wsp"
+        onMouseLeave={(e) => {
+          let span = e.target.querySelector("span");
+          if (span) {
+            span.classList.remove("show")
+          }
+        }}
+        onMouseOver={(e) => {
+          let span = e.target.querySelector(".text");
+          if (span) {
+            span.classList.add("show")
+          }
+        }}
+      >
+        <i className="pi pi-whatsapp"> </i>
+        <span className="text"><b> ¡Haz tu pedido!</b></span>
+      </a>
     </div>
   );
 };
