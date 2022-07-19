@@ -117,7 +117,7 @@ export const Book = () => {
         saveData.idReceta = _product.idReceta;
         saveData.id_Pastel = _product.id_Pastel;
         let response = await fetch(
-          "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/actualizarReceta",
+          "http://localhost:8080/Recetas/actualizarReceta",
           {
             method: "PUT",
             headers: {
@@ -139,7 +139,7 @@ export const Book = () => {
         console.log(pastelSeleccionado);
 
         let responsePastel = await fetch(
-          "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/actualizarPastel",
+          "http://localhost:8080/Recetas/actualizarPastel",
           {
             method: "PUT",
             headers: {
@@ -180,7 +180,7 @@ export const Book = () => {
 
 
         let response = await fetch(
-          "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/ingresarReceta",
+          "http://localhost:8080/Recetas/ingresarReceta",
           {
             method: "POST",
             headers: {
@@ -230,7 +230,7 @@ export const Book = () => {
   const deleteProduct = () => {
     let _products = products.filter((val) => val.idReceta !== product.idReceta);
     fetch(
-      "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/eliminarReceta/" + product.idReceta,
+      "http://localhost:8080/Recetas/eliminarReceta/" + product.idReceta,
       {
         method: "DELETE",
         headers: {
@@ -245,7 +245,7 @@ export const Book = () => {
     );
 
     fetch(
-      "https://douceamitiequilpuegcp.rj.r.appspot.com/Recetas/eliminarPastel/" + product.id_Pastel,
+      "http://localhost:8080/Recetas/eliminarPastel/" + product.id_Pastel,
       {
         method: "DELETE",
         headers: {

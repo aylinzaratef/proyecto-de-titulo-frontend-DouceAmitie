@@ -29,7 +29,7 @@ export const Box = () => {
     saveData.fechaGasto = data.date.toISOString().split("T")[0].toString();
     console.log(saveData);
     let response = await fetch(
-      "https://douceamitiequilpuegcp.rj.r.appspot.com/Estadisticas/ingresarGasto",
+      "http://localhost:8080/Estadisticas/ingresarGasto",
       {
         method: "POST",
         headers: {

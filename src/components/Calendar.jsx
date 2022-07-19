@@ -268,7 +268,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       console.log(actualizarData);
 
       let response = await fetch(
-        "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/actualizarPedido",
+        "http://localhost:8080/Pedidos/actualizarPedido",
         {
           method: "PUT",
           headers: {
@@ -302,7 +302,7 @@ class AppointmentFormContainerBasic extends React.PureComponent {
       saveData.pasteles = this.state.dataPasteles;
 
       let response = await fetch(
-        "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/ingresarPedido",
+        "http://localhost:8080/Pedidos/ingresarPedido",
         {
           method: "POST",
           headers: {
@@ -971,7 +971,7 @@ export default class Calendar extends React.PureComponent {
         actualizarData.valor_total = saveData.valor_total;
         console.log("soy el guardado ", actualizarData);
         fetch(
-          "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/actualizarPedido",
+          "http://localhost:8080/Pedidos/actualizarPedido",
           {
             method: "PUT",
             headers: {
@@ -997,7 +997,7 @@ export default class Calendar extends React.PureComponent {
       }
       if (deleted) {
         fetch(
-          "https://douceamitiequilpuegcp.rj.r.appspot.com/Pedidos/eliminarPedido/" + saveData.id_Pedido,
+          "http://localhost:8080/Pedidos/eliminarPedido/" + saveData.id_Pedido,
           {
             method: "DELETE",
             headers: {
